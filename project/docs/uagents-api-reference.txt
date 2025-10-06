@@ -1,0 +1,2595 @@
+<page>
+  <title>Agents - uAgents Framework docs</title>
+  <url>https://uagents.fetch.ai/</url>
+  <content>Introduction[](#introduction)
+-----------------------------
+
+The uAgents Framework is a python library designed to facilitate the development of Agents. Agents in a multi-Agent system can communicate with any, and all agents in the system to solve problems, execute tasks and transact.
+
+ℹ️
+
+Head over to the [uagents package](https://pypi.org/project/uagents/) to download it and start developing your Agents!
+
+Current version of the uAgents package is .
+
+### Getting into Agents[](#getting-into-agents)
+
+Agents are programs designed to operate freely and communicate with whomever they’re programmed to. Agents can connect, search, and transact in order to create dynamic markets, and they can be programmed to interact both within their local network or with other agents across all networks. Because they’re siloed, and decentralized they can safely accomplish particular activities and objectives without requiring human participation. We have a very simple guide in our documentation that gets you started on building an Agent to be part [of the Network](https://uagents.fetch.ai/docs/getting-started/create).
+
+At the simplest level, and agent would work as follows:
+
+Agents come online, they register (or not) and then send and receive messages.
+
+Using the above workflow as reference, many Agent can come together to become multi-Agents workflows, where single Agents call one another to complete a task. That can create a chain of Agents relying on responses from other Agents. Agents that you design could be programmed to contact known Agents, whereas in a dynamic marketplace you may need an agent that you haven’t created, searching and interacting with that Agent may be the more optimal strategy.
+
+Get to know more about: [registering](https://network.fetch.ai/docs/introduction/almanac/register-in-almanac), [searching](https://network.fetch.ai/docs/introduction/almanac/introduction) and [communication](https://uagents.fetch.ai/docs/guides/communication).
+
+A simple Agent using the `uagents` library could be:
+
+    from uagents import Agent, Context, Model
+     
+    agent = Agent(name="concept", seed="secret_seed_phrase_concept", endpoint="127.0.0.1", port="8001")
+     
+    class Message(Model):
+        message : str
+     
+     
+    @agent.on_message(model=Message)
+    async def print_message(ctx: Context, msg : Message):
+        ctx.logger.info(f"Message received: {msg.message}")
+     
+    if __name__ == "__main__":
+        agent.run()
+
+This Agent defines its communication method as receiving any Object of `Class Message`, with a value for `message` of type `string`. You can see how this agent behaves, and how to extend this in our guides.
+
+Agents can be inserted to existing systems with the ability to simplify the way we see complicated systems. As an example, supply chain management could deploy Agents using the uAgents Framework to improve operations at various stages. Demand forecasting, inventory control, logistics optimization, supplier relationships monitoring, quality control and risk mitigation in all areas can be done with their help. Agents could transform supply chain operations by increasing efficiency, reducing costs, improving accuracy and providing real-time visibility.
+
+You can view the source code for an Agent that monitors inventory levels in [our examples](https://github.com/fetchai/uAgent-Examples/blob/main/3-applications/inventory-monitoring/src/main.py).
+
+Agents thrive on IoT devices such as Raspberry Pi, and there are some great examples of multi-Agent simulations using Agents on Raspberry Pi available on [Github](https://github.com/Agents-Lab/sensor-agent).
+
+#### LLMs[](#llms)
+
+Agents can wrap and orchestrate LLMs to create personalized Agents for any task. With the rise of Large Language Models (LLMs) and AI-related products, autonomous intelligent Agents have become the link between these models and tools. They are revolutionizing the way we solve problems, make decisions and collaborate with each other.
+
+Integrating LLMs into an Agent is relatively trivial, [we have a guide for that too](https://uagents.fetch.ai/docs/guides/langchain_agent)!
+
+In this context, a standout example is **ASI:One Mini**, which is an LLM created by Fetch.ai. Unlike general-purpose models, ASI:One Mini is designed to connect directly with Agents that act as domain experts. This enables ASI:One to answer specialized questions, make real-world reservations, and serve as an intelligent gateway into an _organic_ multi-Agent ecosystem. Check out the [ASI:One Mini](https://docs.asi1.ai/docs) documentation for a better understanding, or head over to this [example](https://uagents.fetch.ai/docs/examples/asi-1) for a practical visualization.
+
+### Getting started with Agent development![](#getting-started-with-agent-development)
+
+Visit the [GitHub repository](https://github.com/fetchai/uAgents) to see the source code for Agents, and to keep up-to-date with any update made to the uAgents Framework.
+
+From there, view the examples on uAgents repository, or start reading our guides, we’d recommend starting with [agent to agent communication](https://uagents.fetch.ai/docs/guides/communication).
+
+### Agentverse[](#agentverse)
+
+Fetch.ai has invested heavily into a toolset to help you build and deploy Agents with ease. Once you’re familiar with Agents and the uAgents Framework, check out [Agentverse](https://agentverse.ai/docs) to host your Agents in the cloud.</content>
+</page>
+
+<page>
+  <title>src.uagents.config docs</title>
+  <url>https://uagents.fetch.ai/refs/api/config</url>
+  <content>References
+
+#### parse\_endpoint\_config - [Github](https://github.com/fetchai/uAgents/blob/main/python/src/uagents/config.py#L46)[](#parse_endpoint_config---github)
+
+    def parse_endpoint_config(
+        endpoint: Optional[Union[str, List[str], Dict[str, dict]]]
+    ) -> List[AgentEndpoint]
+
+Parse the user-provided endpoint configuration.
+
+**Returns**:
+
+Optional\[List\[Dict\[str, Any\]\]\]: The parsed endpoint configuration.
+
+#### parse\_agentverse\_config - [Github](https://github.com/fetchai/uAgents/blob/main/python/src/uagents/config.py#L73)[](#parse_agentverse_config---github)
+
+    def parse_agentverse_config(
+        config: Optional[Union[str, Dict[str, str]]] = None
+    ) -> Dict[str, Union[str, bool, None]]
+
+Parse the user-provided agentverse configuration.
+
+**Returns**:
+
+Dict\[str, Union\[str, bool, None\]\]: The parsed agentverse configuration.
+
+Last updated on
+
+July 1, 2025</content>
+</page>
+
+<page>
+  <title>src.uagents.agent docs</title>
+  <url>https://uagents.fetch.ai/refs/api/agent</url>
+  <content>Agent
+
+AgentRepresentation Objects - [Github](https://github.com/fetchai/uAgents/blob/main/python/src/uagents/agent.py#L121)[](#agentrepresentation-objects---github)
+--------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+    class AgentRepresentation()
+
+Represents an agent in the context of a message.
+
+**Attributes**:
+
+*   `_address` _str_ - The address of the agent.
+    
+*   `_name` _Optional\[str\]_ - The name of the agent.
+    
+*   `_signing_callback` _Callable_ - The callback for signing messages.
+    
+    Properties:
+    
+*   `name` _str_ - The name of the agent.
+    
+*   `address` _str_ - The address of the agent.
+    
+*   `identifier` _str_ - The agent’s address and network prefix.
+    
+
+**Methods**:
+
+*   `sign_digest(data` - bytes) -> str: Sign the provided data with the agent’s identity.
+
+#### init - [Github](https://github.com/fetchai/uAgents/blob/main/python/src/uagents/agent.py#L139)[](#init---github)
+
+    def __init__(address: str, name: Optional[str], signing_callback: Callable)
+
+Initialize the AgentRepresentation instance.
+
+**Arguments**:
+
+*   `address` _str_ - The address of the context.
+*   `name` _Optional\[str\]_ - The optional name associated with the context.
+*   `signing_callback` _Callable_ - The callback for signing messages.
+
+#### name - [Github](https://github.com/fetchai/uAgents/blob/main/python/src/uagents/agent.py#L157)[](#name---github)
+
+    @property
+    def name() -> str
+
+Get the name associated with the context or a truncated address if name is None.
+
+**Returns**:
+
+*   `str` - The name or truncated address.
+
+#### address - [Github](https://github.com/fetchai/uAgents/blob/main/python/src/uagents/agent.py#L169)[](#address---github)
+
+    @property
+    def address() -> str
+
+Get the address of the context.
+
+**Returns**:
+
+*   `str` - The address of the context.
+
+#### identifier - [Github](https://github.com/fetchai/uAgents/blob/main/python/src/uagents/agent.py#L179)[](#identifier---github)
+
+    @property
+    def identifier() -> str
+
+Get the address of the agent used for communication including the network prefix.
+
+**Returns**:
+
+*   `str` - The agent’s address and network prefix.
+
+#### sign\_digest - [Github](https://github.com/fetchai/uAgents/blob/main/python/src/uagents/agent.py#L189)[](#sign_digest---github)
+
+    def sign_digest(data: bytes) -> str
+
+Sign the provided data with the callback of the agent’s identity.
+
+**Arguments**:
+
+*   `data` _bytes_ - The data to sign.
+
+**Returns**:
+
+*   `str` - The signature of the data.
+
+Agent Objects - [Github](https://github.com/fetchai/uAgents/blob/main/python/src/uagents/agent.py#L202)[](#agent-objects---github)
+----------------------------------------------------------------------------------------------------------------------------------
+
+An agent that interacts within a communication environment.
+
+**Attributes**:
+
+*   `_name` _str_ - The name of the agent.
+    
+*   `_port` _int_ - The port on which the agent’s server runs.
+    
+*   `_background_tasks` _Set\[asyncio.Task\]_ - Set of background tasks associated with the agent.
+    
+*   `_resolver` _Resolver_ - The resolver for agent communication.
+    
+*   `_loop` _asyncio.AbstractEventLoop_ - The asyncio event loop used by the agent.
+    
+*   `_logger` - The logger instance for logging agent activities.
+    
+*   `_endpoints` _List\[AgentEndpoint\]_ - List of endpoints at which the agent is reachable.
+    
+*   `_use_mailbox` _bool_ - Indicates if the agent uses a mailbox for communication.
+    
+*   `_agentverse` _dict_ - Agentverse configuration settings.
+    
+*   `_mailbox_client` _MailboxClient_ - The client for interacting with the agentverse mailbox.
+    
+*   `_ledger` - The client for interacting with the blockchain ledger.
+    
+*   `_almanac_contract` - The almanac contract for registering agent addresses to endpoints.
+    
+*   `_storage` - Key-value store for agent data storage.
+    
+*   `_interval_handlers` _List\[Tuple\[IntervalCallback, float\]\]_ - List of interval handlers and their periods.
+    
+*   `_interval_messages` _Set\[str\]_ - Set of message digests that may be sent by interval tasks.
+    
+*   `_signed_message_handlers` _Dict\[str, MessageCallback\]_ - Handlers for signed messages.
+    
+*   `_unsigned_message_handlers` _Dict\[str, MessageCallback\]_ - Handlers for unsigned messages.
+    
+*   `_message_cache` _EnvelopeHistory_ - History of messages received by the agent.
+    
+*   `_models` _Dict\[str, Type\[Model\]\]_ - Dictionary mapping supported message digests to messages.
+    
+*   `_replies` _Dict\[str, Dict\[str, Type\[Model\]\]\]_ - Dictionary of allowed replies for each type of incoming message.
+    
+*   `_queries` _Dict\[str, asyncio.Future\]_ - Dictionary mapping query senders to their response Futures.
+    
+*   `_dispatcher` - The dispatcher for internal handling/sorting of messages.
+    
+*   `_dispenser` - The dispatcher for external message handling.
+    
+*   `_message_queue` - Asynchronous queue for incoming messages.
+    
+*   `_on_startup` _List\[Callable\]_ - List of functions to run on agent startup.
+    
+*   `_on_shutdown` _List\[Callable\]_ - List of functions to run on agent shutdown.
+    
+*   `_version` _str_ - The version of the agent.
+    
+*   `_protocol` _Protocol_ - The internal agent protocol consisting of all interval and message handlers assigned with agent decorators.
+    
+*   `protocols` _Dict\[str, Protocol\]_ - Dictionary mapping all supported protocol digests to their corresponding protocols.
+    
+*   `_ctx` _Context_ - The context for agent interactions.
+    
+*   `_test` _bool_ - True if the agent will register and transact on the testnet.
+    
+*   `_enable_agent_inspector` _bool_ - Enable the agent inspector REST endpoints.
+    
+*   `_metadata` _Dict\[str, Any\]_ - Metadata associated with the agent.
+    
+    Properties:
+    
+*   `name` _str_ - The name of the agent.
+    
+*   `address` _str_ - The address of the agent used for communication.
+    
+*   `identifier` _str_ - The Agent Identifier, including network prefix and address.
+    
+*   `wallet` _LocalWallet_ - The agent’s wallet for transacting on the ledger.
+    
+*   `storage` _KeyValueStore_ - The key-value store for storage operations.
+    
+*   `mailbox` _Dict\[str, str\]_ - The mailbox configuration for the agent.
+    
+*   `agentverse` _Dict\[str, str\]_ - The agentverse configuration for the agent.
+    
+*   `mailbox_client` _MailboxClient_ - The client for interacting with the agentverse mailbox.
+    
+*   `protocols` _Dict\[str, Protocol\]_ - Dictionary mapping all supported protocol digests to their corresponding protocols.
+    
+*   `metadata` _Optional\[Dict\[str, Any\]\]_ - Metadata associated with the agent.
+    
+
+#### **init** - [Github](https://github.com/fetchai/uAgents/blob/main/python/src/uagents/agent.py#L262)[](#init---github-1)
+
+    def __init__(name: Optional[str] = None,
+                 port: Optional[int] = None,
+                 seed: Optional[str] = None,
+                 endpoint: Optional[Union[str, List[str], Dict[str, dict]]] = None,
+                 agentverse: Optional[Union[str, Dict[str, str]]] = None,
+                 mailbox: Optional[Union[str, Dict[str, str]]] = None,
+                 resolve: Optional[Resolver] = None,
+                 registration_policy: Optional[AgentRegistrationPolicy] = None,
+                 enable_wallet_messaging: Union[bool, Dict[str, str]] = False,
+                 wallet_key_derivation_index: Optional[int] = 0,
+                 max_resolver_endpoints: Optional[int] = None,
+                 version: Optional[str] = None,
+                 test: bool = True,
+                 loop: Optional[asyncio.AbstractEventLoop] = None,
+                 log_level: Union[int, str] = logging.INFO,
+                 enable_agent_inspector: bool = True,
+                 metadata: Optional[Dict[str, Any]] = None)
+
+Initialize an Agent instance.
+
+**Arguments**:
+
+*   `name` _Optional\[str\]_ - The name of the agent.
+*   `port` _Optional\[int\]_ - The port on which the agent’s server will run.
+*   `seed` _Optional\[str\]_ - The seed for generating keys.
+*   `endpoint` _Optional\[Union\[str, List\[str\], Dict\[str, dict\]\]\]_ - The endpoint configuration.
+*   `agentverse` _Optional\[Union\[str, Dict\[str, str\]\]\]_ - The agentverse configuration.
+*   `mailbox` _Optional\[Union\[str, Dict\[str, str\]\]\]_ - The mailbox configuration.
+*   `resolve` _Optional\[Resolver\]_ - The resolver to use for agent communication.
+*   `enable_wallet_messaging` _Optional\[Union\[bool, Dict\[str, str\]\]\]_ - Whether to enable wallet messaging. If ’{“chain\_id”: CHAIN\_ID}’ is provided, this sets the chain ID for the messaging server.
+*   `wallet_key_derivation_index` _Optional\[int\]_ - The index used for deriving the wallet key.
+*   `max_resolver_endpoints` _Optional\[int\]_ - The maximum number of endpoints to resolve.
+*   `version` _Optional\[str\]_ - The version of the agent.
+*   `test` _Optional\[bool\]_ - True if the agent will register and transact on the testnet.
+*   `loop` _Optional\[asyncio.AbstractEventLoop\]_ - The asyncio event loop to use.
+*   `log_level` _Union\[int, str\]_ - The logging level for the agent.
+*   `enable_agent_inspector` _bool_ - Enable the agent inspector for debugging.
+*   `metadata` _Optional\[Dict\[str, Any\]\]_ - Optional metadata to include in the agent object.
+
+#### initialize\_wallet\_messaging - [Github](https://github.com/fetchai/uAgents/blob/main/python/src/uagents/agent.py#L478)[](#initialize_wallet_messaging---github)
+
+    def initialize_wallet_messaging(enable_wallet_messaging: Union[bool,
+                                                                   Dict[str,
+                                                                        str]])
+
+Initialize wallet messaging for the agent.
+
+**Arguments**:
+
+*   `enable_wallet_messaging` _Union\[bool, Dict\[str, str\]\]_ - Wallet messaging configuration.
+
+#### name - [Github](https://github.com/fetchai/uAgents/blob/main/python/src/uagents/agent.py#L537)[](#name---github-1)
+
+    @property
+    def name() -> str
+
+Get the name of the agent.
+
+**Returns**:
+
+*   `str` - The name of the agent.
+
+#### address - [Github](https://github.com/fetchai/uAgents/blob/main/python/src/uagents/agent.py#L547)[](#address---github-1)
+
+    @property
+    def address() -> str
+
+Get the address of the agent used for communication.
+
+**Returns**:
+
+*   `str` - The agent’s address.
+
+#### identifier - [Github](https://github.com/fetchai/uAgents/blob/main/python/src/uagents/agent.py#L557)[](#identifier---github-1)
+
+    @property
+    def identifier() -> str
+
+Get the Agent Identifier, including network prefix and address.
+
+**Returns**:
+
+*   `str` - The agent’s identifier.
+
+#### wallet - [Github](https://github.com/fetchai/uAgents/blob/main/python/src/uagents/agent.py#L568)[](#wallet---github)
+
+    @property
+    def wallet() -> LocalWallet
+
+Get the wallet of the agent.
+
+**Returns**:
+
+*   `LocalWallet` - The agent’s wallet.
+
+#### ledger - [Github](https://github.com/fetchai/uAgents/blob/main/python/src/uagents/agent.py#L578)[](#ledger---github)
+
+    @property
+    def ledger() -> LedgerClient
+
+Get the ledger of the agent.
+
+**Returns**:
+
+*   `LedgerClient` - The agent’s ledger
+
+#### storage - [Github](https://github.com/fetchai/uAgents/blob/main/python/src/uagents/agent.py#L588)[](#storage---github)
+
+    @property
+    def storage() -> KeyValueStore
+
+Get the key-value store used by the agent for data storage.
+
+**Returns**:
+
+*   `KeyValueStore` - The key-value store instance.
+
+#### mailbox - [Github](https://github.com/fetchai/uAgents/blob/main/python/src/uagents/agent.py#L598)[](#mailbox---github)
+
+    @property
+    def mailbox() -> Dict[str, str]
+
+Get the mailbox configuration of the agent. Agentverse overrides it but mailbox is kept for backwards compatibility.
+
+**Returns**:
+
+Dict\[str, str\]: The mailbox configuration.
+
+#### agentverse - [Github](https://github.com/fetchai/uAgents/blob/main/python/src/uagents/agent.py#L609)[](#agentverse---github)
+
+    @property
+    def agentverse() -> Dict[str, str]
+
+Get the agentverse configuration of the agent.
+
+**Returns**:
+
+Dict\[str, str\]: The agentverse configuration.
+
+#### mailbox\_client - [Github](https://github.com/fetchai/uAgents/blob/main/python/src/uagents/agent.py#L619)[](#mailbox_client---github)
+
+    @property
+    def mailbox_client() -> Optional[MailboxClient]
+
+Get the mailbox client used by the agent for mailbox communication.
+
+**Returns**:
+
+*   `Optional[MailboxClient]` - The mailbox client instance.
+
+#### balance - [Github](https://github.com/fetchai/uAgents/blob/main/python/src/uagents/agent.py#L629)[](#balance---github)
+
+    @property
+    def balance() -> int
+
+Get the balance of the agent.
+
+**Returns**:
+
+*   `int` - Bank balance.
+
+#### info - [Github](https://github.com/fetchai/uAgents/blob/main/python/src/uagents/agent.py#L640)[](#info---github)
+
+    @property
+    def info() -> AgentInfo
+
+Get basic information about the agent.
+
+**Returns**:
+
+*   `AgentInfo` - The agent’s address, endpoints, protocols, and metadata.
+
+#### metadata - [Github](https://github.com/fetchai/uAgents/blob/main/python/src/uagents/agent.py#L655)[](#metadata---github)
+
+    @property
+    def metadata() -> Dict[str, Any]
+
+Get the metadata associated with the agent.
+
+**Returns**:
+
+Dict\[str, Any\]: The metadata associated with the agent.
+
+#### mailbox[](#mailbox)
+
+    @mailbox.setter
+    def mailbox(config: Union[str, Dict[str, str]])
+
+Set the mailbox configuration for the agent. Agentverse overrides it but mailbox is kept for backwards compatibility.
+
+**Arguments**:
+
+*   `config` _Union\[str, Dict\[str, str\]\]_ - The new mailbox configuration.
+
+#### agentverse[](#agentverse)
+
+    @agentverse.setter
+    def agentverse(config: Union[str, Dict[str, str]])
+
+Set the agentverse configuration for the agent.
+
+**Arguments**:
+
+*   `config` _Union\[str, Dict\[str, str\]\]_ - The new agentverse configuration.
+
+#### sign - [Github](https://github.com/fetchai/uAgents/blob/main/python/src/uagents/agent.py#L686)[](#sign---github)
+
+    def sign(data: bytes) -> str
+
+Sign the provided data.
+
+**Arguments**:
+
+*   `data` _bytes_ - The data to be signed.
+
+**Returns**:
+
+*   `str` - The signature of the data.
+
+#### sign\_digest - [Github](https://github.com/fetchai/uAgents/blob/main/python/src/uagents/agent.py#L699)[](#sign_digest---github-1)
+
+    def sign_digest(digest: bytes) -> str
+
+Sign the provided digest.
+
+**Arguments**:
+
+*   `digest` _bytes_ - The digest to be signed.
+
+**Returns**:
+
+*   `str` - The signature of the digest.
+
+#### sign\_registration - [Github](https://github.com/fetchai/uAgents/blob/main/python/src/uagents/agent.py#L712)[](#sign_registration---github)
+
+    def sign_registration(timestamp: int,
+                          sender_wallet_address: Optional[str] = None) -> str
+
+Sign the registration data for Almanac contract.
+
+**Arguments**:
+
+*   `timestamp` _int_ - The timestamp for the registration.
+*   `sender_wallet_address` _Optional\[str\]_ - The wallet address of the transaction sender.
+
+**Returns**:
+
+*   `str` - The signature of the registration data.
+
+**Raises**:
+
+*   `AssertionError` - If the Almanac contract is None.
+
+#### update\_endpoints - [Github](https://github.com/fetchai/uAgents/blob/main/python/src/uagents/agent.py#L738)[](#update_endpoints---github)
+
+    def update_endpoints(endpoints: List[AgentEndpoint])
+
+Update the list of endpoints.
+
+**Arguments**:
+
+*   `endpoints` _List\[AgentEndpoint\]_ - List of endpoint dictionaries.
+
+#### update\_loop - [Github](https://github.com/fetchai/uAgents/blob/main/python/src/uagents/agent.py#L748)[](#update_loop---github)
+
+Update the event loop.
+
+**Arguments**:
+
+*   `loop` - The event loop.
+
+#### update\_queries - [Github](https://github.com/fetchai/uAgents/blob/main/python/src/uagents/agent.py#L759)[](#update_queries---github)
+
+    def update_queries(queries)
+
+Update the queries attribute.
+
+**Arguments**:
+
+*   `queries` - The queries attribute.
+
+#### update\_registration\_policy - [Github](https://github.com/fetchai/uAgents/blob/main/python/src/uagents/agent.py#L770)[](#update_registration_policy---github)
+
+    def update_registration_policy(policy: AgentRegistrationPolicy)
+
+Update the registration policy.
+
+**Arguments**:
+
+*   `policy` - The registration policy.
+
+#### register - [Github](https://github.com/fetchai/uAgents/blob/main/python/src/uagents/agent.py#L781)[](#register---github)
+
+Register with the Almanac contract.
+
+This method checks for registration conditions and performs registration if necessary.
+
+#### on\_interval - [Github](https://github.com/fetchai/uAgents/blob/main/python/src/uagents/agent.py#L815)[](#on_interval---github)
+
+    def on_interval(period: float,
+                    messages: Optional[Union[Type[Model],
+                                             Set[Type[Model]]]] = None)
+
+Decorator to register an interval handler for the provided period.
+
+**Arguments**:
+
+*   `period` _float_ - The interval period.
+*   `messages` _Optional\[Union\[Type\[Model\], Set\[Type\[Model\]\]\]\]_ - Optional message types.
+
+**Returns**:
+
+*   `Callable` - The decorator function for registering interval handlers.
+
+#### on\_query - [Github](https://github.com/fetchai/uAgents/blob/main/python/src/uagents/agent.py#L834)[](#on_query---github)
+
+    def on_query(model: Type[Model],
+                 replies: Optional[Union[Type[Model], Set[Type[Model]]]] = None)
+
+Set up a query event with a callback.
+
+**Arguments**:
+
+*   `model` _Type\[Model\]_ - The query model.
+*   `replies` _Optional\[Union\[Model, Set\[Model\]\]\]_ - Optional reply models.
+
+**Returns**:
+
+*   `Callable` - The decorator function for registering query handlers.
+
+#### on\_message - [Github](https://github.com/fetchai/uAgents/blob/main/python/src/uagents/agent.py#L853)[](#on_message---github)
+
+    def on_message(model: Type[Model],
+                   replies: Optional[Union[Type[Model], Set[Type[Model]]]] = None,
+                   allow_unverified: Optional[bool] = False)
+
+Decorator to register an message handler for the provided message model.
+
+**Arguments**:
+
+*   `model` _Type\[Model\]_ - The message model.
+*   `replies` _Optional\[Union\[Type\[Model\], Set\[Type\[Model\]\]\]\]_ - Optional reply models.
+*   `allow_unverified` _Optional\[bool\]_ - Allow unverified messages.
+
+**Returns**:
+
+*   `Callable` - The decorator function for registering message handlers.
+
+#### on\_event - [Github](https://github.com/fetchai/uAgents/blob/main/python/src/uagents/agent.py#L874)[](#on_event---github)
+
+    def on_event(event_type: str)
+
+Decorator to register an event handler for a specific event type.
+
+**Arguments**:
+
+*   `event_type` _str_ - The type of event.
+
+**Returns**:
+
+*   `Callable` - The decorator function for registering event handlers.
+
+#### on\_wallet\_message - [Github](https://github.com/fetchai/uAgents/blob/main/python/src/uagents/agent.py#L961)[](#on_wallet_message---github)
+
+Add a handler for wallet messages.
+
+#### include - [Github](https://github.com/fetchai/uAgents/blob/main/python/src/uagents/agent.py#L975)[](#include---github)
+
+    def include(protocol: Protocol, publish_manifest: Optional[bool] = False)
+
+Include a protocol into the agent’s capabilities.
+
+**Arguments**:
+
+*   `protocol` _Protocol_ - The protocol to include.
+*   `publish_manifest` _Optional\[bool\]_ - Flag to publish the protocol’s manifest.
+
+**Raises**:
+
+*   `RuntimeError` - If a duplicate model, signed message handler, or message handler is encountered.
+
+#### publish\_manifest - [Github](https://github.com/fetchai/uAgents/blob/main/python/src/uagents/agent.py#L1020)[](#publish_manifest---github)
+
+    def publish_manifest(manifest: Dict[str, Any])
+
+Publish a protocol manifest to the Almanac service.
+
+**Arguments**:
+
+*   `manifest` _Dict\[str, Any\]_ - The protocol manifest.
+
+#### handle\_message - [Github](https://github.com/fetchai/uAgents/blob/main/python/src/uagents/agent.py#L1044)[](#handle_message---github)
+
+    async def handle_message(sender, schema_digest: str, message: JsonStr,
+                             session: uuid.UUID)
+
+Handle an incoming message.
+
+**Arguments**:
+
+*   `sender` - The sender of the message.
+*   `schema_digest` _str_ - The digest of the message schema.
+*   `message` _JsonStr_ - The message content in JSON format.
+*   `session` _uuid.UUID_ - The session UUID.
+
+#### handle\_rest - [Github](https://github.com/fetchai/uAgents/blob/main/python/src/uagents/agent.py#L1059)[](#handle_rest---github)
+
+    async def handle_rest(
+            method: RestMethod, endpoint: str,
+            message: Optional[Model]) -> Optional[Union[Dict[str, Any], Model]]
+
+Handle a REST request.
+
+**Arguments**:
+
+*   `method` _RestMethod_ - The REST method.
+*   `endpoint` _str_ - The REST endpoint.
+*   `message` _Model_ - The message content.
+
+#### setup - [Github](https://github.com/fetchai/uAgents/blob/main/python/src/uagents/agent.py#L1128)[](#setup---github)
+
+Include the internal agent protocol, run startup tasks, and start background tasks.
+
+#### start\_registration\_loop - [Github](https://github.com/fetchai/uAgents/blob/main/python/src/uagents/agent.py#L1138)[](#start_registration_loop---github)
+
+    def start_registration_loop()
+
+Start the registration loop.
+
+#### start\_message\_dispenser - [Github](https://github.com/fetchai/uAgents/blob/main/python/src/uagents/agent.py#L1145)[](#start_message_dispenser---github)
+
+    def start_message_dispenser()
+
+Start the message dispenser.
+
+#### start\_interval\_tasks - [Github](https://github.com/fetchai/uAgents/blob/main/python/src/uagents/agent.py#L1152)[](#start_interval_tasks---github)
+
+    def start_interval_tasks()
+
+Start interval tasks for the agent.
+
+#### start\_message\_receivers - [Github](https://github.com/fetchai/uAgents/blob/main/python/src/uagents/agent.py#L1162)[](#start_message_receivers---github)
+
+    def start_message_receivers()
+
+Start message receiving tasks for the agent.
+
+#### start\_server - [Github](https://github.com/fetchai/uAgents/blob/main/python/src/uagents/agent.py#L1180)[](#start_server---github)
+
+Start the agent’s server.
+
+#### run\_async - [Github](https://github.com/fetchai/uAgents/blob/main/python/src/uagents/agent.py#L1197)[](#run_async---github)
+
+Create all tasks for the agent.
+
+#### run - [Github](https://github.com/fetchai/uAgents/blob/main/python/src/uagents/agent.py#L1222)[](#run---github)
+
+Run the agent by itself. A fresh event loop is created for the agent and it is closed after the agent stops.
+
+#### get\_message\_protocol - [Github](https://github.com/fetchai/uAgents/blob/main/python/src/uagents/agent.py#L1233)[](#get_message_protocol---github)
+
+    def get_message_protocol(
+            message_schema_digest) -> Optional[Tuple[str, Protocol]]
+
+Get the protocol for a given message schema digest.
+
+Bureau Objects - [Github](https://github.com/fetchai/uAgents/blob/main/python/src/uagents/agent.py#L1345)[](#bureau-objects---github)
+-------------------------------------------------------------------------------------------------------------------------------------
+
+A class representing a Bureau of agents.
+
+This class manages a collection of agents and orchestrates their execution.
+
+**Attributes**:
+
+*   `_loop` _asyncio.AbstractEventLoop_ - The event loop.
+*   `_agents` _List\[Agent\]_ - The list of agents to be managed by the bureau.
+*   `_endpoints` _List\[Dict\[str, Any\]\]_ - The endpoint configuration for the bureau.
+*   `_port` _int_ - The port on which the bureau’s server runs.
+*   `_queries` _Dict\[str, asyncio.Future\]_ - Dictionary mapping query senders to their response Futures.
+*   `_logger` _Logger_ - The logger instance.
+*   `_server` _ASGIServer_ - The ASGI server instance for handling requests.
+*   `_agentverse` _Dict\[str, str\]_ - The agentverse configuration for the bureau.
+*   `_use_mailbox` _bool_ - A flag indicating whether mailbox functionality is enabled for any of the agents.
+*   `_registration_policy` _AgentRegistrationPolicy_ - The registration policy for the bureau.
+
+#### **init** - [Github](https://github.com/fetchai/uAgents/blob/main/python/src/uagents/agent.py#L1368)[](#init---github-2)
+
+    def __init__(agents: Optional[List[Agent]] = None,
+                 port: Optional[int] = None,
+                 endpoint: Optional[Union[str, List[str], Dict[str, dict]]] = None,
+                 agentverse: Optional[Union[str, Dict[str, str]]] = None,
+                 registration_policy: Optional[BatchRegistrationPolicy] = None,
+                 ledger: Optional[LedgerClient] = None,
+                 wallet: Optional[LocalWallet] = None,
+                 seed: Optional[str] = None,
+                 test: bool = True,
+                 loop: Optional[asyncio.AbstractEventLoop] = None,
+                 log_level: Union[int, str] = logging.INFO)
+
+Initialize a Bureau instance.
+
+**Arguments**:
+
+*   `agents` _Optional\[List\[Agent\]\]_ - The list of agents to be managed by the bureau.
+*   `port` _Optional\[int\]_ - The port number for the server.
+*   `endpoint` _Optional\[Union\[str, List\[str\], Dict\[str, dict\]\]\]_ - The endpoint configuration.
+*   `agentverse` _Optional\[Union\[str, Dict\[str, str\]\]\]_ - The agentverse configuration.
+*   `registration_policy` _Optional\[BatchRegistrationPolicy\]_ - The registration policy.
+*   `ledger` _Optional\[LedgerClient\]_ - The ledger for the bureau.
+*   `wallet` _Optional\[LocalWallet\]_ - The wallet for the bureau (overrides ‘seed’).
+*   `seed` _Optional\[str\]_ - The seed phrase for the wallet (overridden by ‘wallet’).
+*   `test` _Optional\[bool\]_ - True if the bureau will register and transact on the testnet.
+*   `loop` _Optional\[asyncio.AbstractEventLoop\]_ - The event loop.
+*   `log_level` _Union\[int, str\]_ - The logging level for the bureau.
+
+#### add - [Github](https://github.com/fetchai/uAgents/blob/main/python/src/uagents/agent.py#L1491)[](#add---github)
+
+Add an agent to the bureau.
+
+**Arguments**:
+
+*   `agent` _Agent_ - The agent to be added.
+
+#### run\_async - [Github](https://github.com/fetchai/uAgents/blob/main/python/src/uagents/agent.py#L1525)[](#run_async---github-1)
+
+Run the agents managed by the bureau.
+
+#### run - [Github](https://github.com/fetchai/uAgents/blob/main/python/src/uagents/agent.py#L1551)[](#run---github-1)
+
+Run the bureau.</content>
+</page>
+
+<page>
+  <title>src.uagents.mailbox docs</title>
+  <url>https://uagents.fetch.ai/refs/api/mailbox</url>
+  <content>References
+
+MailboxClient Objects - [Github](https://github.com/fetchai/uAgents/blob/main/python/src/uagents/mailbox.py#L19)[](#mailboxclient-objects---github)
+---------------------------------------------------------------------------------------------------------------------------------------------------
+
+Client for interacting with the Agentverse mailbox server.
+
+#### base\_url - [Github](https://github.com/fetchai/uAgents/blob/main/python/src/uagents/mailbox.py#L29)[](#base_url---github)
+
+Property to access the base url of the mailbox server.
+
+Returns: The base url of the mailbox server.
+
+#### agent\_mailbox\_key - [Github](https://github.com/fetchai/uAgents/blob/main/python/src/uagents/mailbox.py#L39)[](#agent_mailbox_key---github)
+
+    @property
+    def agent_mailbox_key()
+
+Property to access the agent\_mailbox\_key of the mailbox server.
+
+Returns: The agent\_mailbox\_key of the mailbox server.
+
+#### protocol - [Github](https://github.com/fetchai/uAgents/blob/main/python/src/uagents/mailbox.py#L48)[](#protocol---github)
+
+Property to access the protocol of the mailbox server.
+
+Returns: The protocol of the mailbox server `{ws, wss, http, https}`
+
+#### http\_prefix - [Github](https://github.com/fetchai/uAgents/blob/main/python/src/uagents/mailbox.py#L57)[](#http_prefix---github)
+
+    @property
+    def http_prefix()
+
+Property to access the http prefix of the mailbox server.
+
+Returns: The http prefix of the mailbox server `{http, https}`.
+
+#### run - [Github](https://github.com/fetchai/uAgents/blob/main/python/src/uagents/mailbox.py#L66)[](#run---github)
+
+Runs the mailbox client.
+
+#### start\_polling - [Github](https://github.com/fetchai/uAgents/blob/main/python/src/uagents/mailbox.py#L74)[](#start_polling---github)
+
+    async def start_polling()
+
+Runs the mailbox client. Acquires an access token if needed and then starts a polling loop.
+
+#### process\_deletion\_queue - [Github](https://github.com/fetchai/uAgents/blob/main/python/src/uagents/mailbox.py#L126)[](#process_deletion_queue---github)
+
+    async def process_deletion_queue()
+
+Processes the deletion queue. Deletes envelopes from the mailbox server.
+
+Last updated on
+
+July 1, 2025</content>
+</page>
+
+<page>
+  <title>src.uagents.models docs</title>
+  <url>https://uagents.fetch.ai/refs/api/models</url>
+  <content>References
+
+[Github](https://github.com/fetchai/uAgents/blob/main/python/uagents-core/uagents_core/models.py)
+
+ErrorMessage Objects[](#errormessage-objects)
+---------------------------------------------
+
+    class ErrorMessage(Model)
+
+Error message model
+
+Last updated on
+
+July 1, 2025</content>
+</page>
+
+<page>
+  <title>src.uagents.network docs</title>
+  <url>https://uagents.fetch.ai/refs/api/network</url>
+  <content>Network and Contracts.
+
+InsufficientFundsError Objects - [Github](https://github.com/fetchai/uAgents/blob/main/python/src/uagents/network.py#L47)[](#insufficientfundserror-objects---github)
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+    class InsufficientFundsError(Exception)
+
+Raised when an agent has insufficient funds for a transaction.
+
+#### get\_ledger - [Github](https://github.com/fetchai/uAgents/blob/main/python/src/uagents/network.py#L64)[](#get_ledger---github)
+
+    def get_ledger(test: bool = True) -> LedgerClient
+
+Get the Ledger client.
+
+**Arguments**:
+
+*   `test` _bool_ - Whether to use the testnet or mainnet. Defaults to True.
+
+**Returns**:
+
+*   `LedgerClient` - The Ledger client instance.
+
+#### get\_faucet - [Github](https://github.com/fetchai/uAgents/blob/main/python/src/uagents/network.py#L79)[](#get_faucet---github)
+
+    def get_faucet() -> FaucetApi
+
+Get the Faucet API instance.
+
+**Returns**:
+
+*   `FaucetApi` - The Faucet API instance.
+
+#### add\_testnet\_funds - [Github](https://github.com/fetchai/uAgents/blob/main/python/src/uagents/network.py#L89)[](#add_testnet_funds---github)
+
+    def add_testnet_funds(wallet_address: str)
+
+Add testnet funds to the provided wallet address.
+
+**Arguments**:
+
+*   `wallet_address` _str_ - The wallet address to add funds to.
+
+#### parse\_record\_config - [Github](https://github.com/fetchai/uAgents/blob/main/python/src/uagents/network.py#L101)[](#parse_record_config---github)
+
+    def parse_record_config(
+        record: Optional[Union[str, List[str], Dict[str, dict]]]
+    ) -> Optional[List[Dict[str, Any]]]
+
+Parse the user-provided record configuration.
+
+**Returns**:
+
+Optional\[List\[Dict\[str, Any\]\]\]: The parsed record configuration in correct format.
+
+#### wait\_for\_tx\_to\_complete - [Github](https://github.com/fetchai/uAgents/blob/main/python/src/uagents/network.py#L124)[](#wait_for_tx_to_complete---github)
+
+    async def wait_for_tx_to_complete(
+            tx_hash: str,
+            ledger: LedgerClient,
+            timeout: Optional[timedelta] = None,
+            poll_period: Optional[timedelta] = None) -> TxResponse
+
+Wait for a transaction to complete on the Ledger.
+
+**Arguments**:
+
+*   `tx_hash` _str_ - The hash of the transaction to monitor.
+*   `ledger` _LedgerClient_ - The Ledger client to poll.
+*   `timeout` _Optional\[timedelta\], optional_ - The maximum time to wait. the transaction to complete. Defaults to None.
+*   `poll_period` _Optional\[timedelta\], optional_ - The time interval to poll
+
+**Returns**:
+
+*   `TxResponse` - The response object containing the transaction details.
+
+AlmanacContract Objects - [Github](https://github.com/fetchai/uAgents/blob/main/python/src/uagents/network.py#L161)[](#almanaccontract-objects---github)
+--------------------------------------------------------------------------------------------------------------------------------------------------------
+
+    class AlmanacContract(LedgerContract)
+
+A class representing the Almanac contract for agent registration.
+
+This class provides methods to interact with the Almanac contract, including checking if an agent is registered, retrieving the expiry height of an agent’s registration, and getting the endpoints associated with an agent’s registration.
+
+#### check\_version - [Github](https://github.com/fetchai/uAgents/blob/main/python/src/uagents/network.py#L170)[](#check_version---github)
+
+    def check_version() -> bool
+
+Check if the contract version supported by this version of uAgents matches the deployed version.
+
+**Returns**:
+
+*   `bool` - True if the contract version is supported, False otherwise.
+
+#### query\_contract - [Github](https://github.com/fetchai/uAgents/blob/main/python/src/uagents/network.py#L194)[](#query_contract---github)
+
+    def query_contract(query_msg: Dict[str, Any]) -> Any
+
+Execute a query with additional checks and error handling.
+
+**Arguments**:
+
+*   `query_msg` _Dict\[str, Any\]_ - The query message.
+
+**Returns**:
+
+*   `Any` - The query response.
+
+**Raises**:
+
+*   `RuntimeError` - If the contract address is not set or the query fails.
+
+#### get\_contract\_version - [Github](https://github.com/fetchai/uAgents/blob/main/python/src/uagents/network.py#L216)[](#get_contract_version---github)
+
+    def get_contract_version() -> str
+
+Get the version of the contract.
+
+**Returns**:
+
+*   `str` - The version of the contract.
+
+#### is\_registered - [Github](https://github.com/fetchai/uAgents/blob/main/python/src/uagents/network.py#L228)[](#is_registered---github)
+
+    def is_registered(address: str) -> bool
+
+Check if an agent is registered in the Almanac contract.
+
+**Arguments**:
+
+*   `address` _str_ - The agent’s address.
+
+**Returns**:
+
+*   `bool` - True if the agent is registered, False otherwise.
+
+#### registration\_needs\_update - [Github](https://github.com/fetchai/uAgents/blob/main/python/src/uagents/network.py#L243)[](#registration_needs_update---github)
+
+    def registration_needs_update(address: str, endpoints: List[AgentEndpoint],
+                                  protocols: List[str],
+                                  min_seconds_left: int) -> bool
+
+Check if an agent’s registration needs to be updated.
+
+**Arguments**:
+
+*   `address` _str_ - The agent’s address.
+*   `endpoints` _List\[AgentEndpoint\]_ - The agent’s endpoints.
+*   `protocols` _List\[str\]_ - The agent’s protocols.
+*   `min_time_left` _int_ - The minimum time left before the agent’s registration expires
+
+**Returns**:
+
+*   `bool` - True if the agent’s registration needs to be updated or will expire sooner than the specified minimum time, False otherwise.
+
+#### query\_agent\_record - [Github](https://github.com/fetchai/uAgents/blob/main/python/src/uagents/network.py#L273)[](#query_agent_record---github)
+
+    def query_agent_record(
+            address: str) -> Tuple[int, List[AgentEndpoint], List[str]]
+
+Get the records associated with an agent’s registration.
+
+**Arguments**:
+
+*   `address` _str_ - The agent’s address.
+
+**Returns**:
+
+Tuple\[int, List\[AgentEndpoint\], List\[str\]\]: The expiry height of the agent’s registration, the agent’s endpoints, and the agent’s protocols.
+
+#### get\_expiry - [Github](https://github.com/fetchai/uAgents/blob/main/python/src/uagents/network.py#L310)[](#get_expiry---github)
+
+    def get_expiry(address: str) -> int
+
+Get the approximate seconds to expiry of an agent’s registration.
+
+**Arguments**:
+
+*   `address` _str_ - The agent’s address.
+
+**Returns**:
+
+*   `int` - The approximate seconds to expiry of the agent’s registration.
+
+#### get\_endpoints - [Github](https://github.com/fetchai/uAgents/blob/main/python/src/uagents/network.py#L322)[](#get_endpoints---github)
+
+    def get_endpoints(address: str) -> List[AgentEndpoint]
+
+Get the endpoints associated with an agent’s registration.
+
+**Arguments**:
+
+*   `address` _str_ - The agent’s address.
+
+**Returns**:
+
+*   `List[AgentEndpoint]` - The agent’s registered endpoints.
+
+#### get\_protocols - [Github](https://github.com/fetchai/uAgents/blob/main/python/src/uagents/network.py#L334)[](#get_protocols---github)
+
+    def get_protocols(address: str) -> List[str]
+
+Get the protocols associated with an agent’s registration.
+
+**Arguments**:
+
+*   `address` _str_ - The agent’s address.
+
+**Returns**:
+
+*   `List[str]` - The agent’s registered protocols.
+
+#### register - [Github](https://github.com/fetchai/uAgents/blob/main/python/src/uagents/network.py#L368)[](#register---github)
+
+    async def register(ledger: LedgerClient, wallet: LocalWallet,
+                       agent_address: str, protocols: List[str],
+                       endpoints: List[AgentEndpoint], signature: str,
+                       current_time: int)
+
+Register an agent with the Almanac contract.
+
+**Arguments**:
+
+*   `ledger` _LedgerClient_ - The Ledger client.
+*   `wallet` _LocalWallet_ - The agent’s wallet.
+*   `agent_address` _str_ - The agent’s address.
+*   `protocols` _List\[str\]_ - List of protocols.
+*   `endpoints` _List\[Dict\[str, Any\]\]_ - List of endpoint dictionaries.
+*   `signature` _str_ - The agent’s signature.
+
+#### register\_batch - [Github](https://github.com/fetchai/uAgents/blob/main/python/src/uagents/network.py#L416)[](#register_batch---github)
+
+    async def register_batch(ledger: LedgerClient, wallet: LocalWallet,
+                             agent_records: List[AlmanacContractRecord])
+
+Register multiple agents with the Almanac contract.
+
+**Arguments**:
+
+*   `ledger` _LedgerClient_ - The Ledger client.
+*   `wallet` _LocalWallet_ - The wallet of the registration sender.
+*   `agents` _List\[ALmanacContractRecord\]_ - The list of signed agent records to register.
+
+#### get\_sequence - [Github](https://github.com/fetchai/uAgents/blob/main/python/src/uagents/network.py#L464)[](#get_sequence---github)
+
+    def get_sequence(address: str) -> int
+
+Get the agent’s sequence number for Almanac registration.
+
+**Arguments**:
+
+*   `address` _str_ - The agent’s address.
+
+**Returns**:
+
+*   `int` - The agent’s sequence number.
+
+#### get\_almanac\_contract - [Github](https://github.com/fetchai/uAgents/blob/main/python/src/uagents/network.py#L488)[](#get_almanac_contract---github)
+
+    def get_almanac_contract(test: bool = True) -> Optional[AlmanacContract]
+
+Get the AlmanacContract instance.
+
+**Arguments**:
+
+*   `test` _bool_ - Whether to use the testnet or mainnet. Defaults to True.
+
+**Returns**:
+
+*   `AlmanacContract` - The AlmanacContract instance if version is supported.
+
+NameServiceContract Objects - [Github](https://github.com/fetchai/uAgents/blob/main/python/src/uagents/network.py#L507)[](#nameservicecontract-objects---github)
+----------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+    class NameServiceContract(LedgerContract)
+
+A class representing the NameService contract for managing domain names and ownership.
+
+This class provides methods to interact with the NameService contract, including checking name availability, checking ownership, querying domain public status, obtaining registration transaction details, and registering a name within a domain.
+
+#### query\_contract - [Github](https://github.com/fetchai/uAgents/blob/main/python/src/uagents/network.py#L516)[](#query_contract---github-1)
+
+    def query_contract(query_msg: Dict[str, Any]) -> Any
+
+Execute a query with additional checks and error handling.
+
+**Arguments**:
+
+*   `query_msg` _Dict\[str, Any\]_ - The query message.
+
+**Returns**:
+
+*   `Any` - The query response.
+
+**Raises**:
+
+*   `RuntimeError` - If the contract address is not set or the query fails.
+
+#### is\_name\_available - [Github](https://github.com/fetchai/uAgents/blob/main/python/src/uagents/network.py#L538)[](#is_name_available---github)
+
+    def is_name_available(name: str, domain: str) -> bool
+
+Check if a name is available within a domain.
+
+**Arguments**:
+
+*   `name` _str_ - The name to check.
+*   `domain` _str_ - The domain to check within.
+
+**Returns**:
+
+*   `bool` - True if the name is available, False otherwise.
+
+#### is\_owner - [Github](https://github.com/fetchai/uAgents/blob/main/python/src/uagents/network.py#L552)[](#is_owner---github)
+
+    def is_owner(name: str, domain: str, wallet_address: str) -> bool
+
+Check if the provided wallet address is the owner of a name within a domain.
+
+**Arguments**:
+
+*   `name` _str_ - The name to check ownership for.
+*   `domain` _str_ - The domain to check within.
+*   `wallet_address` _str_ - The wallet address to check ownership against.
+
+**Returns**:
+
+*   `bool` - True if the wallet address is the owner, False otherwise.
+
+#### is\_domain\_public - [Github](https://github.com/fetchai/uAgents/blob/main/python/src/uagents/network.py#L573)[](#is_domain_public---github)
+
+    def is_domain_public(domain: str) -> bool
+
+Check if a domain is public.
+
+**Arguments**:
+
+*   `domain` _str_ - The domain to check.
+
+**Returns**:
+
+*   `bool` - True if the domain is public, False otherwise.
+
+#### get\_previous\_records - [Github](https://github.com/fetchai/uAgents/blob/main/python/src/uagents/network.py#L590)[](#get_previous_records---github)
+
+    def get_previous_records(name: str, domain: str)
+
+Retrieve the previous records for a given name within a specified domain.
+
+**Arguments**:
+
+*   `name` _str_ - The name whose records are to be retrieved.
+*   `domain` _str_ - The domain within which the name is registered.
+
+**Returns**:
+
+A list of dictionaries, where each dictionary contains details of a record associated with the given name.
+
+#### get\_registration\_tx - [Github](https://github.com/fetchai/uAgents/blob/main/python/src/uagents/network.py#L608)[](#get_registration_tx---github)
+
+    def get_registration_tx(name: str, wallet_address: Address,
+                            agent_records: Union[List[Dict[str, Any]],
+                                                 str], domain: str, test: bool)
+
+Get the registration transaction for registering a name within a domain.
+
+**Arguments**:
+
+*   `name` _str_ - The name to be registered.
+*   `wallet_address` _str_ - The wallet address initiating the registration.
+*   `agent_address` _str_ - The address of the agent.
+*   `domain` _str_ - The domain in which the name is registered.
+*   `test` _bool_ - The agent type
+
+**Returns**:
+
+*   `Optional[Transaction]` - The registration transaction, or None if the name is not available or not owned by the wallet address.
+
+#### register - [Github](https://github.com/fetchai/uAgents/blob/main/python/src/uagents/network.py#L666)[](#register---github-1)
+
+    async def register(ledger: LedgerClient,
+                       wallet: LocalWallet,
+                       agent_records: Optional[Union[str, List[str], Dict[str,
+                                                                          dict]]],
+                       name: str,
+                       domain: str,
+                       overwrite: bool = True)
+
+Register a name within a domain using the NameService contract.
+
+**Arguments**:
+
+*   `ledger` _LedgerClient_ - The Ledger client.
+*   `wallet` _LocalWallet_ - The wallet of the agent.
+*   `agent_address` _str_ - The address of the agent.
+*   `name` _str_ - The name to be registered.
+*   `domain` _str_ - The domain in which the name is registered.
+*   `overwrite` _bool, optional_ - Specifies whether to overwrite any existing addresses registered to the domain. If False, the address will be appended to the previous records. Defaults to True.
+
+#### unregister - [Github](https://github.com/fetchai/uAgents/blob/main/python/src/uagents/network.py#L741)[](#unregister---github)
+
+    async def unregister(name: str, domain: str, wallet: LocalWallet)
+
+Unregister a name within a domain using the NameService contract.
+
+**Arguments**:
+
+*   `name` _str_ - The name to be unregistered.
+*   `domain` _str_ - The domain in which the name is registered.
+*   `wallet` _LocalWallet_ - The wallet of the agent.
+
+#### get\_name\_service\_contract - [Github](https://github.com/fetchai/uAgents/blob/main/python/src/uagents/network.py#L779)[](#get_name_service_contract---github)
+
+    def get_name_service_contract(test: bool = True) -> NameServiceContract
+
+Get the NameServiceContract instance.
+
+**Arguments**:
+
+*   `test` _bool_ - Whether to use the testnet or mainnet. Defaults to True.
+
+**Returns**:
+
+*   `NameServiceContract` - The NameServiceContract instance.</content>
+</page>
+
+<page>
+  <title>src.uagents.protocol docs</title>
+  <url>https://uagents.fetch.ai/refs/api/protocol</url>
+  <content>Exchange Protocol
+
+Protocol Objects - [Github](https://github.com/fetchai/uAgents/blob/main/python/src/uagents/protocol.py#L17)[](#protocol-objects---github)
+------------------------------------------------------------------------------------------------------------------------------------------
+
+The Protocol class encapsulates a particular set of functionalities for an agent. It typically relates to the exchange of messages between agents for executing some task. It includes the message (model) types it supports, the allowed replies, and the interval message handlers that define the logic of the protocol.
+
+#### **init** - [Github](https://github.com/fetchai/uAgents/blob/main/python/src/uagents/protocol.py#L26)[](#init---github)
+
+    def __init__(name: Optional[str] = None, version: Optional[str] = None)
+
+Initialize a Protocol instance.
+
+**Arguments**:
+
+*   `name` _Optional\[str\], optional_ - The name of the protocol. Defaults to None.
+*   `version` _Optional\[str\], optional_ - The version of the protocol. Defaults to None.
+
+#### intervals - [Github](https://github.com/fetchai/uAgents/blob/main/python/src/uagents/protocol.py#L51)[](#intervals---github)
+
+    @property
+    def intervals()
+
+Property to access the interval handlers.
+
+**Returns**:
+
+List\[Tuple\[IntervalCallback, float\]\]: List of interval handlers and their periods.
+
+#### models - [Github](https://github.com/fetchai/uAgents/blob/main/python/src/uagents/protocol.py#L61)[](#models---github)
+
+Property to access the registered models.
+
+**Returns**:
+
+Dict\[str, Type\[Model\]\]: Dictionary of registered models with schema digests as keys.
+
+#### replies - [Github](https://github.com/fetchai/uAgents/blob/main/python/src/uagents/protocol.py#L71)[](#replies---github)
+
+Property to access the registered replies.
+
+**Returns**:
+
+Dict\[str, Dict\[str, Type\[Model\]\]\]: Dictionary mapping message schema digests to their allowed replies.
+
+#### interval\_messages - [Github](https://github.com/fetchai/uAgents/blob/main/python/src/uagents/protocol.py#L82)[](#interval_messages---github)
+
+    @property
+    def interval_messages()
+
+Property to access the interval message digests.
+
+**Returns**:
+
+*   `Set[str]` - Set of message digests that may be sent by interval handlers.
+
+#### signed\_message\_handlers - [Github](https://github.com/fetchai/uAgents/blob/main/python/src/uagents/protocol.py#L92)[](#signed_message_handlers---github)
+
+    @property
+    def signed_message_handlers()
+
+Property to access the signed message handlers.
+
+**Returns**:
+
+Dict\[str, MessageCallback\]: Dictionary mapping message schema digests to their handlers.
+
+#### unsigned\_message\_handlers - [Github](https://github.com/fetchai/uAgents/blob/main/python/src/uagents/protocol.py#L102)[](#unsigned_message_handlers---github)
+
+    @property
+    def unsigned_message_handlers()
+
+Property to access the unsigned message handlers.
+
+**Returns**:
+
+Dict\[str, MessageCallback\]: Dictionary mapping message schema digests to their handlers.
+
+#### name - [Github](https://github.com/fetchai/uAgents/blob/main/python/src/uagents/protocol.py#L112)[](#name---github)
+
+Property to access the protocol name.
+
+**Returns**:
+
+*   `str` - The protocol name.
+
+#### version - [Github](https://github.com/fetchai/uAgents/blob/main/python/src/uagents/protocol.py#L122)[](#version---github)
+
+Property to access the protocol version.
+
+**Returns**:
+
+*   `str` - The protocol version.
+
+#### canonical\_name - [Github](https://github.com/fetchai/uAgents/blob/main/python/src/uagents/protocol.py#L132)[](#canonical_name---github)
+
+    @property
+    def canonical_name()
+
+Property to access the canonical name of the protocol (‘name:version’).
+
+**Returns**:
+
+*   `str` - The canonical name of the protocol.
+
+#### digest - [Github](https://github.com/fetchai/uAgents/blob/main/python/src/uagents/protocol.py#L142)[](#digest---github)
+
+Property to access the digest of the protocol’s manifest.
+
+**Returns**:
+
+*   `str` - The digest of the protocol’s manifest.
+
+#### on\_interval - [Github](https://github.com/fetchai/uAgents/blob/main/python/src/uagents/protocol.py#L152)[](#on_interval---github)
+
+    def on_interval(period: float,
+                    messages: Optional[Union[Type[Model],
+                                             Set[Type[Model]]]] = None)
+
+Decorator to register an interval handler for the protocol.
+
+**Arguments**:
+
+*   `period` _float_ - The interval period in seconds.
+*   `messages` _Optional\[Union\[Type\[Model\], Set\[Type\[Model\]\]\]\], optional_ - The associated message types. Defaults to None.
+
+**Returns**:
+
+*   `Callable` - The decorator to register the interval handler.
+
+#### on\_query - [Github](https://github.com/fetchai/uAgents/blob/main/python/src/uagents/protocol.py#L205)[](#on_query---github)
+
+    def on_query(model: Type[Model],
+                 replies: Optional[Union[Type[Model], Set[Type[Model]]]] = None)
+
+Decorator to register a query handler for the protocol.
+
+**Arguments**:
+
+*   `model` _Type\[Model\]_ - The message model type.
+*   `replies` _Optional\[Union\[Type\[Model\], Set\[Type\[Model\]\]\]\], optional_ - The associated reply types. Defaults to None.
+
+**Returns**:
+
+*   `Callable` - The decorator to register the query handler.
+
+#### on\_message - [Github](https://github.com/fetchai/uAgents/blob/main/python/src/uagents/protocol.py#L223)[](#on_message---github)
+
+    def on_message(model: Type[Model],
+                   replies: Optional[Union[Type[Model], Set[Type[Model]]]] = None,
+                   allow_unverified: Optional[bool] = False)
+
+Decorator to register a message handler for the protocol.
+
+**Arguments**:
+
+*   `model` _Type\[Model\]_ - The message model type.
+*   `replies` _Optional\[Union\[Type\[Model\], Set\[Type\[Model\]\]\]\], optional_ - The associated reply types. Defaults to None.
+*   `allow_unverified` _Optional\[bool\], optional_ - Whether to allow unverified messages. Defaults to False.
+
+**Returns**:
+
+*   `Callable` - The decorator to register the message handler.
+
+#### manifest - [Github](https://github.com/fetchai/uAgents/blob/main/python/src/uagents/protocol.py#L286)[](#manifest---github)
+
+    def manifest() -> Dict[str, Any]
+
+Generate the protocol’s manifest, a long-form machine readable description of the protocol details and interface.
+
+**Returns**:
+
+Dict\[str, Any\]: The protocol’s manifest.
+
+#### compute\_digest - [Github](https://github.com/fetchai/uAgents/blob/main/python/src/uagents/protocol.py#L346)[](#compute_digest---github)
+
+    @staticmethod
+    def compute_digest(manifest: Dict[str, Any]) -> str
+
+Compute the digest of a given manifest.
+
+**Arguments**:
+
+*   `manifest` _Dict\[str, Any\]_ - The manifest to compute the digest for.
+
+**Returns**:
+
+*   `str` - The computed digest.</content>
+</page>
+
+<page>
+  <title>src.uagents.query docs</title>
+  <url>https://uagents.fetch.ai/refs/api/query</url>
+  <content>References
+
+Query Envelopes.
+
+#### query - - [Github](https://github.com/fetchai/uAgents/blob/main/python/src/uagents/query.py#L12)[](#query-----github)
+
+    async def query(destination: str,
+                    message: Model,
+                    resolver: Optional[Resolver] = None,
+                    timeout: int = 30) -> Union[MsgStatus, Envelope]
+
+Query a remote agent with a message and retrieve the response envelope.
+
+**Arguments**:
+
+*   `destination` _str_ - The destination address of the remote agent.
+*   `message` _Model_ - The message to send.
+*   `resolver` _Optional\[Resolver\], optional_ - The resolver to use for endpoint resolution. Defaults to GlobalResolver.
+*   `timeout` _int_ - The timeout for the query in seconds. Defaults to 30.
+
+**Returns**:
+
+Union\[MsgStatus, Envelope\]: The response envelope if successful, otherwise MsgStatus.
+
+Last updated on
+
+July 1, 2025</content>
+</page>
+
+<page>
+  <title>src.uagents.registration docs</title>
+  <url>https://uagents.fetch.ai/refs/api/registration</url>
+  <content>References
+
+#### generate\_backoff\_time - [Github](https://github.com/fetchai/uAgents/blob/main/python/src/uagents/registration.py#L75)[](#generate_backoff_time---github)
+
+    def generate_backoff_time(retry: int) -> float
+
+Generate a backoff time starting from 0.128 seconds and limited to ~131 seconds
+
+#### coerce\_metadata\_to\_str - [Github](https://github.com/fetchai/uAgents/blob/main/python/src/uagents/registration.py#L82)[](#coerce_metadata_to_str---github)
+
+    def coerce_metadata_to_str(
+        metadata: Optional[Dict[str, Any]]
+    ) -> Optional[Dict[str, Union[str, Dict[str, str]]]]
+
+Step through the metadata and convert any non-string values to strings.
+
+#### extract\_geo\_metadata - [Github](https://github.com/fetchai/uAgents/blob/main/python/src/uagents/registration.py#L101)[](#extract_geo_metadata---github)
+
+    def extract_geo_metadata(
+            metadata: Optional[Dict[str, Any]]) -> Optional[Dict[str, Any]]
+
+Extract geo-location metadata from the metadata dictionary.
+
+LedgerBasedRegistrationPolicy Objects - [Github](https://github.com/fetchai/uAgents/blob/main/python/src/uagents/registration.py#L233)[](#ledgerbasedregistrationpolicy-objects---github)
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+    class LedgerBasedRegistrationPolicy(AgentRegistrationPolicy)
+
+#### check\_contract\_version - [Github](https://github.com/fetchai/uAgents/blob/main/python/src/uagents/registration.py#L251)[](#check_contract_version---github)
+
+    def check_contract_version()
+
+Check the version of the deployed Almanac contract and log a warning if it is different from the supported version.
+
+#### register - [Github](https://github.com/fetchai/uAgents/blob/main/python/src/uagents/registration.py#L265)[](#register---github)
+
+    async def register(agent_address: str,
+                       protocols: List[str],
+                       endpoints: List[AgentEndpoint],
+                       metadata: Optional[Dict[str, Any]] = None)
+
+Register the agent on the Almanac contract if registration is about to expire or the registration data has changed.
+
+Last updated on
+
+July 1, 2025</content>
+</page>
+
+<page>
+  <title>src.uagents.resolver docs</title>
+  <url>https://uagents.fetch.ai/refs/api/resolver</url>
+  <content>Endpoint Resolver.
+
+#### weighted\_random\_sample - [Github](https://github.com/fetchai/uAgents/blob/main/python/src/uagents/resolver.py#L27)[](#weighted_random_sample---github)
+
+    def weighted_random_sample(items: List[Any],
+                               weights: Optional[List[float]] = None,
+                               k: int = 1,
+                               rng=random) -> List[Any]
+
+Weighted random sample from a list of items without replacement.
+
+Ref: Efraimidis, Pavlos S. “Weighted random sampling over data streams.”
+
+**Arguments**:
+
+*   `items` _List\[Any\]_ - The list of items to sample from.
+*   `weights` _Optional\[List\[float\]\]_ - The optional list of weights for each item.
+*   `k` _int_ - The number of items to sample.
+*   `rng` _random_ - The random number generator.
+
+**Returns**:
+
+*   `List[Any]` - The sampled items.
+
+#### is\_valid\_address - [Github](https://github.com/fetchai/uAgents/blob/main/python/src/uagents/resolver.py#L51)[](#is_valid_address---github)
+
+    def is_valid_address(address: str) -> bool
+
+Check if the given string is a valid address.
+
+**Arguments**:
+
+*   `address` _str_ - The address to be checked.
+
+**Returns**:
+
+*   `bool` - True if the address is valid; False otherwise.
+
+#### is\_valid\_prefix - [Github](https://github.com/fetchai/uAgents/blob/main/python/src/uagents/resolver.py#L66)[](#is_valid_prefix---github)
+
+    def is_valid_prefix(prefix: str) -> bool
+
+Check if the given string is a valid prefix.
+
+**Arguments**:
+
+*   `prefix` _str_ - The prefix to be checked.
+
+**Returns**:
+
+*   `bool` - True if the prefix is valid; False otherwise.
+
+#### parse\_identifier - [Github](https://github.com/fetchai/uAgents/blob/main/python/src/uagents/resolver.py#L80)[](#parse_identifier---github)
+
+    def parse_identifier(identifier: str) -> Tuple[str, str, str]
+
+Parse an agent identifier string into prefix, name, and address.
+
+**Arguments**:
+
+*   `identifier` _str_ - The identifier string to be parsed.
+
+**Returns**:
+
+Tuple\[str, str, str\]: A tuple containing the prefix, name, and address as strings.
+
+#### query\_record - [Github](https://github.com/fetchai/uAgents/blob/main/python/src/uagents/resolver.py#L109)[](#query_record---github)
+
+    def query_record(agent_address: str, service: str, test: bool) -> dict
+
+Query a record from the Almanac contract.
+
+**Arguments**:
+
+*   `agent_address` _str_ - The address of the agent.
+*   `service` _str_ - The type of service to query.
+
+**Returns**:
+
+*   `dict` - The query result.
+
+#### get\_agent\_address - [Github](https://github.com/fetchai/uAgents/blob/main/python/src/uagents/resolver.py#L128)[](#get_agent_address---github)
+
+    def get_agent_address(name: str, test: bool) -> Optional[str]
+
+Get the agent address associated with the provided name from the name service contract.
+
+**Arguments**:
+
+*   `name` _str_ - The name to query.
+*   `test` _bool_ - Whether to use the testnet or mainnet contract.
+
+**Returns**:
+
+*   `Optional[str]` - The associated agent address if found.
+
+Resolver Objects - [Github](https://github.com/fetchai/uAgents/blob/main/python/src/uagents/resolver.py#L154)[](#resolver-objects---github)
+-------------------------------------------------------------------------------------------------------------------------------------------
+
+#### resolve - [Github](https://github.com/fetchai/uAgents/blob/main/python/src/uagents/resolver.py#L155)[](#resolve---github)
+
+    @abstractmethod
+    async def resolve(destination: str) -> Tuple[Optional[str], List[str]]
+
+Resolve the destination to an address and endpoint.
+
+**Arguments**:
+
+*   `destination` _str_ - The destination name or address to resolve.
+
+**Returns**:
+
+Tuple\[Optional\[str\], List\[str\]\]: The address (if available) and resolved endpoints.
+
+GlobalResolver Objects - [Github](https://github.com/fetchai/uAgents/blob/main/python/src/uagents/resolver.py#L170)[](#globalresolver-objects---github)
+-------------------------------------------------------------------------------------------------------------------------------------------------------
+
+    class GlobalResolver(Resolver)
+
+#### **init** - [Github](https://github.com/fetchai/uAgents/blob/main/python/src/uagents/resolver.py#L171)[](#init---github)
+
+    def __init__(max_endpoints: Optional[int] = None,
+                 almanac_api_url: Optional[str] = None)
+
+Initialize the GlobalResolver.
+
+**Arguments**:
+
+*   `max_endpoints` _Optional\[int\]_ - The maximum number of endpoints to return.
+*   `almanac_api_url` _Optional\[str\]_ - The url for almanac api
+
+#### resolve - [Github](https://github.com/fetchai/uAgents/blob/main/python/src/uagents/resolver.py#L189)[](#resolve---github-1)
+
+    async def resolve(destination: str) -> Tuple[Optional[str], List[str]]
+
+Resolve the destination using the appropriate resolver.
+
+**Arguments**:
+
+*   `destination` _str_ - The destination name or address to resolve.
+
+**Returns**:
+
+Tuple\[Optional\[str\], List\[str\]\]: The address (if available) and resolved endpoints.
+
+AlmanacContractResolver Objects - [Github](https://github.com/fetchai/uAgents/blob/main/python/src/uagents/resolver.py#L211)[](#almanaccontractresolver-objects---github)
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+    class AlmanacContractResolver(Resolver)
+
+#### **init** - [Github](https://github.com/fetchai/uAgents/blob/main/python/src/uagents/resolver.py#L212)[](#init---github-1)
+
+    def __init__(max_endpoints: Optional[int] = None)
+
+Initialize the AlmanacContractResolver.
+
+**Arguments**:
+
+*   `max_endpoints` _Optional\[int\]_ - The maximum number of endpoints to return.
+
+#### resolve - [Github](https://github.com/fetchai/uAgents/blob/main/python/src/uagents/resolver.py#L221)[](#resolve---github-2)
+
+    async def resolve(destination: str) -> Tuple[Optional[str], List[str]]
+
+Resolve the destination using the Almanac contract.
+
+**Arguments**:
+
+*   `destination` _str_ - The destination address to resolve.
+
+**Returns**:
+
+Tuple\[str, List\[str\]\]: The address and resolved endpoints.
+
+AlmanacApiResolver Objects - [Github](https://github.com/fetchai/uAgents/blob/main/python/src/uagents/resolver.py#L252)[](#almanacapiresolver-objects---github)
+---------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+    class AlmanacApiResolver(Resolver)
+
+#### **init** - [Github](https://github.com/fetchai/uAgents/blob/main/python/src/uagents/resolver.py#L253)[](#init---github-2)
+
+    def __init__(max_endpoints: Optional[int] = None,
+                 almanac_api_url: Optional[str] = None)
+
+Initialize the AlmanacApiResolver.
+
+**Arguments**:
+
+*   `max_endpoints` _Optional\[int\]_ - The maximum number of endpoints to return.
+*   `almanac_api_url` _Optional\[str\]_ - The url for almanac api
+
+#### resolve - [Github](https://github.com/fetchai/uAgents/blob/main/python/src/uagents/resolver.py#L316)[](#resolve---github-3)
+
+    async def resolve(destination: str) -> Tuple[Optional[str], List[str]]
+
+Resolve the destination using the Almanac API. If the resolution using API fails, it retries using the Almanac Contract.
+
+**Arguments**:
+
+*   `destination` _str_ - The destination address to resolve.
+
+**Returns**:
+
+Tuple\[Optional\[str\], List\[str\]\]: The address and resolved endpoints.
+
+NameServiceResolver Objects - [Github](https://github.com/fetchai/uAgents/blob/main/python/src/uagents/resolver.py#L335)[](#nameserviceresolver-objects---github)
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+    class NameServiceResolver(Resolver)
+
+#### **init** - [Github](https://github.com/fetchai/uAgents/blob/main/python/src/uagents/resolver.py#L336)[](#init---github-3)
+
+    def __init__(max_endpoints: Optional[int] = None)
+
+Initialize the NameServiceResolver.
+
+**Arguments**:
+
+*   `max_endpoints` _Optional\[int\]_ - The maximum number of endpoints to return.
+
+#### resolve - [Github](https://github.com/fetchai/uAgents/blob/main/python/src/uagents/resolver.py#L348)[](#resolve---github-4)
+
+    async def resolve(destination: str) -> Tuple[Optional[str], List[str]]
+
+Resolve the destination using the NameService contract.
+
+**Arguments**:
+
+*   `destination` _str_ - The destination name to resolve.
+
+**Returns**:
+
+Tuple\[Optional\[str\], List\[str\]\]: The address (if available) and resolved endpoints.
+
+RulesBasedResolver Objects - [Github](https://github.com/fetchai/uAgents/blob/main/python/src/uagents/resolver.py#L366)[](#rulesbasedresolver-objects---github)
+---------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+    class RulesBasedResolver(Resolver)
+
+#### **init** - [Github](https://github.com/fetchai/uAgents/blob/main/python/src/uagents/resolver.py#L367)[](#init---github-4)
+
+    def __init__(rules: Dict[str, str], max_endpoints: Optional[int] = None)
+
+Initialize the RulesBasedResolver with the provided rules.
+
+**Arguments**:
+
+*   `rules` _Dict\[str, str\]_ - A dictionary of rules mapping destinations to endpoints.
+*   `max_endpoints` _Optional\[int\]_ - The maximum number of endpoints to return.
+
+#### resolve - [Github](https://github.com/fetchai/uAgents/blob/main/python/src/uagents/resolver.py#L378)[](#resolve---github-5)
+
+    async def resolve(destination: str) -> Tuple[Optional[str], List[str]]
+
+Resolve the destination using the provided rules.
+
+**Arguments**:
+
+*   `destination` _str_ - The destination to resolve.
+
+**Returns**:
+
+Tuple\[str, List\[str\]\]: The address and resolved endpoints.</content>
+</page>
+
+<page>
+  <title>src.uagents.setup docs</title>
+  <url>https://uagents.fetch.ai/refs/api/setup</url>
+  <content>References
+
+Agent’s Setup.
+
+#### fund\_agent\_if\_low - [Github](https://github.com/fetchai/uAgents/blob/main/python/src/uagents/setup.py#L14)[](#fund_agent_if_low---github)
+
+    def fund_agent_if_low(wallet_address: str,
+                          min_balance: int = REGISTRATION_FEE)
+
+Checks the agent’s wallet balance and adds testnet funds if it’s below min\_balance.
+
+**Arguments**:
+
+*   `wallet_address` _str_ - The wallet address of the agent.
+*   `min_balance` _int_ - The minimum balance required.
+
+**Returns**:
+
+None
+
+#### register\_agent\_with\_mailbox - [Github](https://github.com/fetchai/uAgents/blob/main/python/src/uagents/setup.py#L39)[](#register_agent_with_mailbox---github)
+
+    def register_agent_with_mailbox(agent: Agent, email: str)
+
+Registers the agent on a mailbox server using the provided email.
+
+**Arguments**:
+
+*   `agent` _Agent_ - The agent object to be registered.
+*   `email` _str_ - The email address associated with the agent.
+
+**Returns**:
+
+None
+
+Last updated on
+
+July 1, 2025</content>
+</page>
+
+<page>
+  <title>src.uagents.storage.init docs</title>
+  <url>https://uagents.fetch.ai/refs/api/storage</url>
+  <content>References
+
+StorageAPI Objects - [Github](https://github.com/fetchai/uAgents/blob/main/python/src/uagents/storage/__init__.py#L11)[](#storageapi-objects---github)
+------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Interface for a key-value like storage system.
+
+KeyValueStore Objects - [Github](https://github.com/fetchai/uAgents/blob/main/python/src/uagents/storage/__init__.py#L35)[](#keyvaluestore-objects---github)
+------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+    class KeyValueStore(StorageAPI)
+
+A simple key-value store implementation for data storage.
+
+**Attributes**:
+
+*   `_data` _dict_ - The internal data storage dictionary.
+*   `_name` _str_ - The name associated with the store.
+*   `_path` _str_ - The file path where the store data is stored.
+
+**Methods**:
+
+*   `__init__` - Initialize the KeyValueStore instance.
+*   `get` - Get the value associated with a key from the store.
+*   `has` - Check if a key exists in the store.
+*   `set` - Set a value associated with a key in the store.
+*   `remove` - Remove a key and its associated value from the store.
+*   `clear` - Clear all data from the store.
+*   `_load` - Load data from the file into the store.
+*   `_save` - Save the store data to the file.
+
+#### **init** - [Github](https://github.com/fetchai/uAgents/blob/main/python/src/uagents/storage/__init__.py#L56)[](#init---github)
+
+    def __init__(name: str, cwd: Optional[str] = None)
+
+Initialize the KeyValueStore instance.
+
+**Arguments**:
+
+*   `name` _str_ - The name associated with the store.
+*   `cwd` _str, optional_ - The current working directory. Defaults to None.
+
+#### load\_all\_keys - [Github](https://github.com/fetchai/uAgents/blob/main/python/src/uagents/storage/__init__.py#L102)[](#load_all_keys---github)
+
+    def load_all_keys() -> dict
+
+Load all private keys from the private keys file.
+
+**Returns**:
+
+*   `dict` - A dictionary containing loaded private keys.
+
+#### save\_private\_keys - [Github](https://github.com/fetchai/uAgents/blob/main/python/src/uagents/storage/__init__.py#L117)[](#save_private_keys---github)
+
+    def save_private_keys(name: str, identity_key: str, wallet_key: str)
+
+Save private keys to the private keys file.
+
+**Arguments**:
+
+*   `name` _str_ - The name associated with the private keys.
+*   `identity_key` _str_ - The identity private key.
+*   `wallet_key` _str_ - The wallet private key.
+
+#### get\_or\_create\_private\_keys - [Github](https://github.com/fetchai/uAgents/blob/main/python/src/uagents/storage/__init__.py#L135)[](#get_or_create_private_keys---github)
+
+    def get_or_create_private_keys(name: str) -> Tuple[str, str]
+
+Get or create private keys associated with a name.
+
+**Arguments**:
+
+*   `name` _str_ - The name associated with the private keys.
+
+**Returns**:
+
+Tuple\[str, str\]: A tuple containing the identity key and wallet key.
+
+Last updated on
+
+July 1, 2025</content>
+</page>
+
+<page>
+  <title>src.uagents.utils docs</title>
+  <url>https://uagents.fetch.ai/refs/api/utils</url>
+  <content>On This Page
+
+*   [get\_logger - Github](#get_logger---github)
+*   [log - Github](#log---github)
+
+[Question? Give us feedback](https://github.com/fetchai/uagents-docs/issues/new?title=Feedback%20for%20%E2%80%9Csrc.uagents.utils%E2%80%9D&labels=feedback) [Edit this page on GitHub](https://github.com/fetchai/uagents-docs/tree/main/src/app/refs/api/utils/page.mdx) 
+
+References
+
+#### get\_logger - [Github](https://github.com/fetchai/uAgents/blob/main/python/src/uagents/utils.py#L10)[](#get_logger---github)
+
+    def get_logger(logger_name: str, level: Union[int, str] = logging.INFO)
+
+Get a logger with the given name using uvicorn’s default formatter.
+
+#### log - [Github](https://github.com/fetchai/uAgents/blob/main/python/src/uagents/utils.py#L23)[](#log---github)
+
+    def log(logger: Optional[logging.Logger], level: int, message: str)
+
+Log a message with the given logger and level.
+
+**Arguments**:
+
+*   `logger` _Optional\[logging.Logger\]_ - The logger to use.
+*   `level` _int_ - The logging level.
+*   `message` _str_ - The message to log.
+
+Last updated on
+
+July 1, 2025</content>
+</page>
+
+<page>
+  <title>src.uagents.envelope docs</title>
+  <url>https://uagents.fetch.ai/refs/api/envelope</url>
+  <content>References
+
+Agent Envelope - [Github](https://github.com/fetchai/uAgents/blob/main/python/uagents-core/uagents_core/envelope.py)
+
+Envelope Objects[](#envelope-objects)
+-------------------------------------
+
+    class Envelope(BaseModel)
+
+Represents an envelope for message communication between agents.
+
+**Attributes**:
+
+*   `version` _int_ - The envelope version.
+*   `sender` _str_ - The sender’s address.
+*   `target` _str_ - The target’s address.
+*   `session` _UUID4_ - The session UUID that persists for back-and-forth dialogues between agents.
+*   `schema_digest` _str_ - The schema digest for the enclosed message.
+*   `protocol_digest` _Optional\[str\]_ - The digest of the protocol associated with the message (optional).
+*   `payload` _Optional\[str\]_ - The encoded message payload of the envelope (optional).
+*   `expires` _Optional\[int\]_ - The expiration timestamp (optional).
+*   `nonce` _Optional\[int\]_ - The nonce value (optional).
+*   `signature` _Optional\[str\]_ - The envelope signature (optional).
+
+#### encode\_payload[](#encode_payload)
+
+    def encode_payload(value: JsonStr)
+
+Encode the payload value and store it in the envelope.
+
+**Arguments**:
+
+*   `value` _JsonStr_ - The payload value to be encoded.
+
+#### decode\_payload[](#decode_payload)
+
+    def decode_payload() -> str
+
+Decode and retrieve the payload value from the envelope.
+
+**Returns**:
+
+*   `str` - The decoded payload value, or ” if payload is not present.
+
+#### sign[](#sign)
+
+    def sign(signing_fn: Callable)
+
+Sign the envelope using the provided signing function.
+
+**Arguments**:
+
+*   `signing_fn` _callback_ - The callback used for signing.
+
+#### verify[](#verify)
+
+Verify the envelope’s signature.
+
+**Returns**:
+
+*   `bool` - True if the signature is valid.
+
+**Raises**:
+
+*   `ValueError` - If the signature is missing.
+*   `ecdsa.BadSignatureError` - If the signature is invalid.
+
+EnvelopeHistory Objects[](#envelopehistory-objects)
+---------------------------------------------------
+
+    class EnvelopeHistory(BaseModel)
+
+#### apply\_retention\_policy[](#apply_retention_policy)
+
+    def apply_retention_policy()
+
+Remove entries older than 24 hours
+
+Last updated on
+
+July 1, 2025</content>
+</page>
+
+<page>
+  <title>src.uagents.types docs</title>
+  <url>https://uagents.fetch.ai/refs/api/types</url>
+  <content>References
+
+AgentGeolocation Objects - [Github](https://github.com/fetchai/uAgents/blob/main/python/src/uagents/types.py#L60)[](#agentgeolocation-objects---github)
+-------------------------------------------------------------------------------------------------------------------------------------------------------
+
+    class AgentGeolocation(BaseModel)
+
+#### serialize\_precision[](#serialize_precision)
+
+    @field_validator("latitude", "longitude")
+    @classmethod
+    def serialize_precision(cls, val: float) -> float
+
+Round the latitude and longitude to 6 decimal places. Equivalent to 0.11m precision.
+
+AgentMetadata Objects - [Github](https://github.com/fetchai/uAgents/blob/main/python/src/uagents/types.py#L76)[](#agentmetadata-objects---github)
+-------------------------------------------------------------------------------------------------------------------------------------------------
+
+    class AgentMetadata(BaseModel)
+
+Model used to validate metadata for an agent.
+
+Framework specific fields will be added here to ensure valid serialization. Additional fields will simply be passed through.
+
+DeliveryStatus Objects - [Github](https://github.com/fetchai/uAgents/blob/main/python/src/uagents/types.py#L92)[](#deliverystatus-objects---github)
+---------------------------------------------------------------------------------------------------------------------------------------------------
+
+    class DeliveryStatus(str, Enum)
+
+Delivery status of a message.
+
+MsgDigest Objects - [Github](https://github.com/fetchai/uAgents/blob/main/python/src/uagents/types.py#L100)[](#msgdigest-objects---github)
+------------------------------------------------------------------------------------------------------------------------------------------
+
+    @dataclass
+    class MsgDigest()
+
+Represents a message digest containing a message and its schema digest.
+
+**Attributes**:
+
+*   `message` _Any_ - The message content.
+*   `schema_digest` _str_ - The schema digest of the message.
+
+MsgStatus Objects - [Github](https://github.com/fetchai/uAgents/blob/main/python/src/uagents/types.py#L114)[](#msgstatus-objects---github)
+------------------------------------------------------------------------------------------------------------------------------------------
+
+    @dataclass
+    class MsgStatus()
+
+Represents the status of a sent message.
+
+**Attributes**:
+
+*   `status` _str_ - The delivery status of the message failed.
+*   `detail` _str_ - The details of the message delivery.
+*   `destination` _str_ - The destination address of the message.
+*   `endpoint` _str_ - The endpoint the message was sent to.
+*   `session` _Optional\[uuid.UUID\]_ - The session ID of the message.
+
+Last updated on
+
+July 1, 2025</content>
+</page>
+
+<page>
+  <title>src.uagents.experimental.dialogues.init docs</title>
+  <url>https://uagents.fetch.ai/refs/api/experimental/dialogues</url>
+  <content>Dialogue class aka. blueprint for protocols - [Github](https://github.com/fetchai/uAgents/tree/main/python/src/uagents/experimental/dialogues).
+
+Node Objects[](#node-objects)
+-----------------------------
+
+A node represents a state in the dialogue.
+
+Edge Objects[](#edge-objects)
+-----------------------------
+
+An edge represents a transition between two states in the dialogue.
+
+#### model[](#model)
+
+    @property
+    def model() -> Optional[Type[Model]]
+
+The message model type that is associated with the edge.
+
+#### model[](#model-1)
+
+    @model.setter
+    def model(model: Type[Model]) -> None
+
+Set the message model type for the edge.
+
+#### func[](#func)
+
+    @property
+    def func() -> Optional[MessageCallback]
+
+The message handler that is associated with the edge.
+
+#### func[](#func-1)
+
+    @func.setter
+    def func(func: MessageCallback) -> None
+
+Set the message handler that will be called when a message is received.
+
+#### efunc[](#efunc)
+
+    @property
+    def efunc() -> Optional[MessageCallback]
+
+The edge handler that is associated with the edge.
+
+#### set\_edge\_handler[](#set_edge_handler)
+
+    def set_edge_handler(model: Type[Model], func: MessageCallback)
+
+Set the edge handler that will be called when a message is received This handler can not be overwritten by a decorator.
+
+#### set\_message\_handler[](#set_message_handler)
+
+    def set_message_handler(model: Type[Model], func: MessageCallback)
+
+Set the default message handler for the edge that will be overwritten if a decorator defines a new function to be called.
+
+Dialogue Objects[](#dialogue-objects)
+-------------------------------------
+
+A dialogue is a protocol with added functionality to handle the enforcement of a sequence of messages. The instance of this class is the local representation of the dialogue, i.e. the definition of a pattern of messages that are exchanged between two participants.
+
+When defining a pattern of Nodes and Edges, the dialogue will automatically be validated for cycles and the rules will be derived from the graph.
+
+The only thing left to do is to add message handlers for the edges in a known fashion, i.e. the message handler for an edge must be decorated with the edge name and the message model type. The message handler will be registered automatically and the message model will be used to validate the message content.
+
+Ex.: @dialogue.\_on\_state\_transition(“edge\_name”, MessageModel) async def handler(ctx: Context, sender: str, message: MessageModel): pass
+
+A common practice is to add additional decorators to the pattern definition to simplify the usage of the dialogue class. This can be done by creating creating additional decorators that call the \_on\_state\_transition method. Ex.: def on\_init(model: Type\[Model\]): return super().\_on\_state\_transition(“edge\_name”, model)
+
+and then use it like this: @pattern.on\_init(MessageModel) async def handler(ctx: Context, sender: str, message: MessageModel): pass
+
+The current features include:
+
+*   A graph representation of the dialogue, which is used to validate the sequence of messages.
+*   Session handling which includes a session storage that contains all the messages that were exchanged between two participants.
+*   Sessions will automatically be deleted after a certain amount of time.
+*   Access to the dialogue history through ctx.dialogue (see Context class).
+
+#### rules[](#rules)
+
+    @property
+    def rules() -> Dict[str, List[str]]
+
+Property to access the rules of the dialogue.
+
+**Returns**:
+
+Dict\[str, List\[str\]\]: Dictionary of rules represented by edges.
+
+#### get\_overview[](#get_overview)
+
+    def get_overview() -> Dict
+
+Get an overview of the dialogue structure.
+
+**Returns**:
+
+*   `Dict` - Manifest like representation of the dialogue structure.
+
+#### is\_starter[](#is_starter)
+
+    def is_starter(digest: str) -> bool
+
+Return True if the digest is the starting message of the dialogue. False otherwise.
+
+#### is\_ender[](#is_ender)
+
+    def is_ender(digest: str) -> bool
+
+Return True if the digest is one of the last messages of the dialogue. False otherwise.
+
+#### get\_current\_state[](#get_current_state)
+
+    def get_current_state(session_id: UUID) -> str
+
+Get the current state of the dialogue for a given session.
+
+#### is\_finished[](#is_finished)
+
+    def is_finished(session_id: UUID) -> bool
+
+Return True if the current state is (one of) the ending state(s). False otherwise.
+
+#### update\_state[](#update_state)
+
+    def update_state(digest: str, session_id: UUID) -> None
+
+Update the state of a dialogue session and create a new session if it does not exist.
+
+**Arguments**:
+
+*   `digest` _str_ - The digest of the message to update the state with.
+*   `session_id` _UUID_ - The ID of the session to update the state for.
+
+#### cleanup\_conversation[](#cleanup_conversation)
+
+    def cleanup_conversation(session_id: UUID) -> None
+
+Removes all messages related with the given session from the dialogue instance.
+
+#### add\_message[](#add_message)
+
+    def add_message(session_id: UUID, message_type: str, schema_digest: str,
+                    sender: str, receiver: str, content: JsonStr,
+                    **kwargs) -> None
+
+Add a message to the conversation of the given session within the dialogue instance.
+
+#### get\_conversation[](#get_conversation)
+
+    def get_conversation(session_id: UUID,
+                         message_filter: Optional[str] = None) -> List[Any]
+
+Return the message history of the given session from the dialogue instance as list of DialogueMessage. This includes both sent and received messages.
+
+**Arguments**:
+
+*   `session_id` _UUID_ - The ID of the session to get the conversation for.
+*   `message_filter` _str_ - The name of the message type to filter for
+
+**Returns**:
+
+*   `list(DialogueMessage)` - A list of all messages exchanged during the given session
+*   `list(DialogueMessage)` - Only messages of type ‘message\_filter’ (Model.**name**) from the given session
+
+#### get\_edge[](#get_edge)
+
+    def get_edge(edge_name: str) -> Edge
+
+Return an edge from the dialogue instance.
+
+#### is\_valid\_message[](#is_valid_message)
+
+    def is_valid_message(session_id: UUID, msg_digest: str) -> bool
+
+Check if an incoming message is valid for a given session.
+
+**Arguments**:
+
+*   `session_id` _UUID_ - The ID of the session to check the message for.
+*   `msg_digest` _str_ - The digest of the message to check.
+
+**Returns**:
+
+*   `bool` - True if the message is valid, False otherwise.
+
+#### is\_valid\_reply[](#is_valid_reply)
+
+    def is_valid_reply(in_msg: str, out_msg: str) -> bool
+
+Check if a reply is valid for a given message.
+
+**Arguments**:
+
+*   `in_msg` _str_ - The digest of the message to check the reply for.
+*   `out_msg` _str_ - The digest of the reply to check.
+
+**Returns**:
+
+*   `bool` - True if the reply is valid, False otherwise.
+
+#### is\_included[](#is_included)
+
+    def is_included(msg_digest: str) -> bool
+
+Check if a message is included in the dialogue.
+
+**Arguments**:
+
+*   `msg_digest` _str_ - The digest of the message to check.
+
+**Returns**:
+
+*   `bool` - True if the message is included, False otherwise.
+
+#### manifest[](#manifest)
+
+    def manifest() -> Dict[str, Any]
+
+This method will add the dialogue structure to the original manifest and recalculate the digest.
+
+#### start\_dialogue[](#start_dialogue)
+
+    async def start_dialogue(ctx: Context, destination: str,
+                             message: Model) -> List[MsgStatus]
+
+Start a dialogue with a message.
+
+**Arguments**:
+
+*   `ctx` _Context_ - The current message context
+*   `destination` _str_ - Either the agent address of the receiver or a protocol digest
+*   `message` _Model_ - The current message to send
+
+**Raises**:
+
+*   `ValueError` - If the dialogue is not started with the specified starting message.
+
+#### initialise\_cleanup\_task[](#initialise_cleanup_task)
+
+    def initialise_cleanup_task(interval: int = 1) -> None
+
+Initialise the cleanup task.
+
+Deletes sessions that have not been used for a certain amount of time. The task runs every second so the configured timeout is currently measured in seconds as well (interval time \* timeout parameter). Sessions with 0 as timeout will never be deleted.
+
+_Important_:
+
+*   setting the interval above 1 will act as a multiplier
+*   setting it to 0 will disable the cleanup task</content>
+</page>
+
+<page>
+  <title>src.uagents.experimental.quota.init docs</title>
+  <url>https://uagents.fetch.ai/refs/api/experimental/quota</url>
+  <content>This Protocol class can be used to rate limit `on_message` message handlers.
+
+The rate limiter uses the agents storage to keep track of the number of requests made by another agent within a given time window. If the number of requests exceeds a specified limit, the rate limiter will block further requests until the time window resets.
+
+> Default: Not rate limited, but you can set a default during initialization.
+
+Additionally, the protocol can be used to set access control rules for handlers allowing or blocking specific agents from accessing the handler. The default access control rule can be set to allow or block all agents.
+
+Both rules can work together to provide a secure and rate-limited environment for message handlers.
+
+[Github](https://github.com/fetchai/uAgents/tree/main/python/src/uagents/experimental/quota)
+
+Usage examples:
+
+    from uagents.experimental.quota import AccessControlList, QuotaProtocol, RateLimit
+     
+    # Initialize the QuotaProtocol instance
+    quota_protocol = QuotaProtocol(
+        storage_reference=agent.storage,
+        name="quota_proto",
+        version=agent._version,
+        # default_rate_limit=RateLimit(window_size_minutes=1, max_requests=3), # Optional
+    )
+     
+    # This message handler is not rate limited
+    @quota_protocol.on_message(ExampleMessage1)
+    async def handle(ctx: Context, sender: str, msg: ExampleMessage1):
+        ...
+     
+    # This message handler is rate limited with custom window size and request limit
+    @quota_protocol.on_message(
+        ExampleMessage2,
+        rate_limit=RateLimit(window_size_minutes=1, max_requests=3),
+    )
+    async def handle(ctx: Context, sender: str, msg: ExampleMessage2):
+        ...
+     
+    # This message handler has access control rules set
+    @quota_protocol.on_message(
+        ExampleMessage3,
+        acl=AccessControlList(default=False, allowed={"<agent_address>"}),
+    )
+    async def handle(ctx: Context, sender: str, msg: ExampleMessage3):
+        ...
+     
+    agent.include(quota_protocol)
+
+Tip: The `AccessControlList` object can be used to set access control rules during runtime. This can be useful for dynamic access control rules based on the state of the agent or the network.
+
+    acl = AccessControlList(default=True)
+     
+    @proto.on_message(model=Message, access_control_list=acl)
+    async def message_handler(ctx: Context, sender: str, msg: Message):
+        if REASON_TO_BLOCK:
+            acl.blocked.add(sender)
+        ctx.logger.info(f"Received message from {sender}: {msg.text}")
+
+QuotaProtocol Objects[](#quotaprotocol-objects)
+-----------------------------------------------
+
+    class QuotaProtocol(Protocol)
+
+#### **init**[](#init)
+
+    def __init__(storage_reference: StorageAPI,
+                 name: Optional[str] = None,
+                 version: Optional[str] = None,
+                 default_rate_limit: Optional[RateLimit] = None,
+                 default_acl: Optional[AccessControlList] = None)
+
+Initialize a QuotaProtocol instance.
+
+**Arguments**:
+
+*   `storage_reference` _StorageAPI_ - The storage reference to use for rate limiting.
+*   `name` _Optional\[str\], optional_ - The name of the protocol. Defaults to None.
+*   `version` _Optional\[str\], optional_ - The version of the protocol. Defaults to None.
+*   `default_rate_limit` _Optional\[RateLimit\], optional_ - The default rate limit. Defaults to None.
+*   `default_acl` _Optional\[AccessControlList\], optional_ - The access control list. Defaults to None.
+
+#### on\_message[](#on_message)
+
+    def on_message(model: Type[Model],
+                   replies: Optional[Union[Type[Model], Set[Type[Model]]]] = None,
+                   allow_unverified: Optional[bool] = False,
+                   rate_limit: Optional[RateLimit] = None,
+                   access_control_list: Optional[AccessControlList] = None)
+
+Overwritten decorator to register a message handler for the protocol including rate limiting.
+
+**Arguments**:
+
+*   `model` _Type\[Model\]_ - The message model type.
+*   `replies` _Optional\[Union\[Type\[Model\], Set\[Type\[Model\]\]\]\], optional_ - The associated reply types. Defaults to None.
+*   `allow_unverified` _Optional\[bool\], optional_ - Whether to allow unverified messages. Defaults to False.
+*   `rate_limit` _Optional\[RateLimit\], optional_ - The rate limit to apply. Defaults to None.
+*   `access_control_list` _Optional\[AccessControlList\], optional_ - The access control list to apply.
+
+**Returns**:
+
+*   `Callable` - The decorator to register the message handler.
+
+#### wrap[](#wrap)
+
+    def wrap(func: MessageCallback,
+             rate_limit: Optional[RateLimit] = None,
+             acl: Optional[AccessControlList] = None) -> MessageCallback
+
+Decorator to wrap a function with rate limiting.
+
+**Arguments**:
+
+*   `func` - The function to wrap with rate limiting
+*   `rate_limit` - The rate limit to apply
+*   `acl` - The access control list to apply
+
+**Returns**:
+
+*   `Callable` - The decorated
+
+#### add\_request[](#add_request)
+
+    def add_request(agent_address: str, function_name: str,
+                    window_size_minutes: int, max_requests: int) -> bool
+
+Add a request to the rate limiter if the current time is still within the time window since the beginning of the most recent time window. Otherwise, reset the time window and add the request.
+
+**Arguments**:
+
+*   `agent_address` - The address of the agent making the request
+
+**Returns**:
+
+False if the maximum number of requests has been exceeded, True otherwise</content>
+</page>

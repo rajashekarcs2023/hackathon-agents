@@ -1,0 +1,44 @@
+Build an embeddable chat widget component in Next.js (using App Router and TypeScript) for a documentation-aware AI assistant. The widget should be lightweight and injectable via a script tag on external sites (e.g., users add <script src="your-app.com/chat-widget.js"></script> and call initChatWidget('#container-id') to render it in a div). For styling, use shadcn/ui components (install via npx shadcn-ui@latest add button input textarea avatar etc.) with Tailwind CSS for a super sleek, modern SaaS look: Minimalist design, dark mode support, subtle animations (e.g., via Framer Motion if needed), responsive for mobile/desktop.
+
+Key Functionality:
+- A floating "Chat Docs" button (shadcn Button with icon, e.g., message bubble) that toggles the chat interface open/closed. When closed, only the button shows; when open, expand to a fixed-position panel (bottom-right corner, like Intercom widgets) with header (e.g., "Ask about Fetch.ai Docs" title, close button), message list (user/AI bubbles with avatars, Markdown support for responses via React Markdown), input field (shadcn Textarea with send button), and loading indicators (e.g., spinner for AI responses).
+- Use Vercel AI SDK's useChat hook for state management and streaming responses from a custom /api/chat endpoint (assume it exists and handles RAG: POST { messages } returns streamed text with citations).
+- Handle citations: If API response includes inline links (e.g., [source]), render as clickable anchors in messages.
+- Make it embeddable: Bundle the component as a UMD module (configure in next.config.js with webpack) into public/chat-widget.js. Expose a global function to mount it (e.g., via ReactDOM.createRoot).
+- Edge cases: Persist chat history in localStorage (keyed by site), handle errors (e.g., "Sorry, try again"), clear chat button, and accessibility (ARIA labels).
+- No auth/UI bloat—just core chat. Optimize for fast load (code-split if needed).
+
+
+my-fetch-ai-chat-app/
+├── app/
+│   ├── api/
+│   │   ├── chat/
+│   │       └── route.ts       # API endpoint for handling user queries (RAG pipeline)
+│   │   
+│   ├── chat/
+│   │   └── page.tsx           # Main chat page (for testing the assistant in-browser)
+│   ├── favicon.ico            # Default favicon
+│   ├── globals.css            # Global styles (e.g., Tailwind)
+│   ├── layout.tsx             # Root layout (wraps all pages)
+│   └── page.tsx               # Home page (simple landing or redirect to /chat)
+├── components/
+│   ├── ChatInput.tsx          # Reusable component for user input field
+│   ├── ChatMessage.tsx        # Component for displaying messages (user/AI with citations)
+│   └── ChatWidget.tsx         # The embeddable chat UI component (for script tag integration)
+├── lib/
+│   ├── embeddings.ts          # Embedding model setup (e.g., OpenAI or Hugging Face)
+│   ├── pinecone.ts            # Pinecone (or SQLite) client initialization and utils
+│   ├── rag.ts                 # Core RAG pipeline (chunk, embed, retrieve, generate via LangChain.js)
+│   └── utils.ts               # General helpers (e.g., text cleaners, chunkers)
+├── public/
+│   ├── chat-widget.js         # Bundled JS for embeddable widget (built from ChatWidget.tsx)
+│   └── ...                    # Other static assets (e.g., images)
+├── scripts/
+│   └── ingest-docs.ts         # Standalone script for initial/full doc ingestion (run via ts-node or npm)
+├── .env.local                 # Environment vars (API keys for OpenAI, Pinecone, etc.)
+├── next.config.js             # Next.js config (e.g., for bundling widget)
+├── package.json               # Dependencies (next, react, langchain, pinecone-client, etc.)
+├── postcss.config.js          # If using Tailwind
+├── tailwind.config.js         # Tailwind setup (optional for styling)
+├── tsconfig.json              # TypeScript config
+└── README.md                  # Project docs
